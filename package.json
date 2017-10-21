@@ -1,0 +1,21 @@
+{
+  "name": "gherkin-transpile",
+  "version": "0.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/glob": "^5.0.33",
+    "@types/node": "^8.0.46",
+    "tslint": "^5.8.0",
+    "typescript": "^2.5.3"
+  },
+  "dependencies": {
+    "gherkin": "^5.0.0",
+    "glob": "^7.1.2"
+  }
+}
