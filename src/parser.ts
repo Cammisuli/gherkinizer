@@ -1,16 +1,6 @@
-import {
-    Compiler,
-    GherkinDocument,
-    GherkinScenario,
-    GherkinScenarioOutline,
-    GherkinStep,
-    GherkinTableCell,
-    Parser,
-    Pickle,
-    PickleStep,
-} from 'gherkin';
+import { Compiler, Parser } from 'gherkin';
 
-export class CucumberParser {
+export default class CucumberParser {
     private _compiler: Compiler;
     private _parser: Parser;
 
@@ -20,7 +10,7 @@ export class CucumberParser {
     }
 
     /**
-     * Parse takes a feature string, and parses it.
+     * Parse takes a feature file (as a string), and parses it.
      * It then returns the `GherkinDocument` (AST) and `Pickle[]`
      * @param fileContent feature file content used to parse
      */

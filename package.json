@@ -10,12 +10,14 @@
   "license": "ISC",
   "devDependencies": {
     "@types/glob": "^5.0.33",
+    "@types/handlebars": "^4.0.36",
     "@types/node": "^8.0.46",
     "tslint": "^5.8.0",
     "typescript": "^2.5.3"
   },
   "dependencies": {
     "gherkin": "^5.0.0",
-    "glob": "^7.1.2"
+    "glob": "^7.1.2",
+    "handlebars": "^4.0.11"
   }
 }
