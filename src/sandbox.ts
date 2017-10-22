@@ -10,7 +10,7 @@ interface StepDefinition {
     func: Func;
 }
 
-class StepsSandbox {
+export class StepsSandbox {
 
     public static map: Map<Step, StepDefinition> = new Map<Step, StepDefinition>();
 

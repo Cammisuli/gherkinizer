@@ -15,7 +15,7 @@ declare module "gherkin" {
         }
     
         interface GherkinFeature extends GherkinBase<'Feature'> {
-            children: GherkinScenario[] | GherkinScenarioOutline[]
+            children: Array<GherkinScenario | GherkinScenarioOutline | GherkinBackground>
             tags: string[];
         }
     
@@ -24,6 +24,11 @@ declare module "gherkin" {
             tags: string[];
             
         }
+
+        interface GherkinBackground extends GherkinBase<'Background'> {
+            steps: GherkinStep[];
+            tags: string[];
+        }
     
         interface GherkinScenarioOutline extends GherkinBase<'ScenarioOutline'> {
             steps: GherkinStep[];
@@ -31,7 +36,10 @@ declare module "gherkin" {
             examples: GherkinExample[];
         }
     
-        interface GherkinStep extends GherkinBase<'Step'> { }
+        interface GherkinStep extends GherkinBase<'Step'> { 
+            text: string;
+        
+        }
     
         interface GherkinExample extends GherkinBase<'Examples'> {
             tableBody: GherkinTableRow[];
@@ -50,7 +58,7 @@ declare module "gherkin" {
         }
     
         interface GherkinBase<T> {
-            description: string | undefined;
+            description?: string;
             /**
              * Contains `Given `, `Then `, `When `.
              * Make sure to trim
@@ -76,7 +84,7 @@ declare module "gherkin" {
         }
     
         interface PickleStep {
-            arguments: string[];
+            arguments?: string[];
             text: string;
         }
     
@@ -85,6 +93,14 @@ declare module "gherkin" {
             Parser,
             Compiler,
             GherkinDocument,
-            Pickle
+            GherkinScenario,
+            GherkinScenarioOutline,
+            GherkinStep,
+            GherkinFeature,
+            GherkinBackground,
+            GherkinTableCell,
+            GherkinTableRow,
+            Pickle,
+            PickleStep
         };
     }

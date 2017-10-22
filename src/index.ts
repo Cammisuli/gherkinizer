@@ -1,26 +1,30 @@
-import chalk from 'chalk';
 import * as fs from 'fs';
 import * as glob from 'glob';
-import { promisify } from 'util';
+import * as util from 'util';
 
 import { CucumberParser } from './parser';
+import { StepsSandbox } from './sandbox';
 
 const GLOB_PATH = process.argv[2] || '**/*.feature';
+const STEPS_FILE = process.argv[3] || 'sample/steps.js';
 
-const readfileAsync = promisify(fs.readFile);
+const readfileAsync = util.promisify(fs.readFile);
 
+/**
+ * Main function to handle parsing and file creation
+ */
 async function main() {
     const cucumber = new CucumberParser();
+    const stepsFile = await readfileAsync(STEPS_FILE);
 
     glob(GLOB_PATH, (err, matches) => {
         if (matches.length > 0) {
             matches.forEach(async (file) => {
                 const fileContent = await readfileAsync(file);
-                const doc = cucumber.parse(fileContent.toString());
-                const pickles = cucumber.compile(doc);
+                const { pickles } = cucumber.parse(fileContent.toString());
             });
         } else {
-            console.log(chalk.red('No files found'));
+            throw Error('No Files Found.');
         }
     });
 }
