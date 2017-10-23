@@ -2,31 +2,39 @@
  * Sandbox used to evaluate step functions
  */
 
-type Step = 'Given' | 'When' | 'Then' | 'And';
 type Func = (...args: any[]) => {};
 
 interface StepDefinition {
     regex: RegExp;
-    func: Func;
+    func: string;
 }
+
+const STEP_MAP: Map<StepKeyword, StepDefinition[]> = new Map<StepKeyword, StepDefinition[]>([
+    ['Given', []],
+    ['When', []],
+    ['Then', []],
+    ['And', []]
+]);
 
 export default class StepsSandbox {
 
-    public static map: Map<Step, StepDefinition> = new Map<Step, StepDefinition>();
+    public static get(stepKeyword: StepKeyword): StepDefinition[] {
+        return STEP_MAP.get(stepKeyword)!;
+    }
 
     public static Given(regex: RegExp, func: Func) {
-        this.map.set('Given', { regex, func });
+        STEP_MAP.get('Given')!.push({ regex, func: func.toString() });
     }
 
     public static When(regex: RegExp, func: Func) {
-        this.map.set('Given', { regex, func });
+        STEP_MAP.get('When')!.push({ regex, func: func.toString() });
     }
 
     public static Then(regex: RegExp, func: Func) {
-        this.map.set('Given', { regex, func });
+        STEP_MAP.get('Then')!.push({ regex, func: func.toString() });
     }
 
     public static And(regex: RegExp, func: Func) {
-        this.map.set('Given', { regex, func });
+        STEP_MAP.get('And')!.push({ regex, func: func.toString() });
     }
 }

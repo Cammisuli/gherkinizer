@@ -1,8 +1,16 @@
 import { compile } from 'handlebars';
 
-interface TemplateModel {
+export interface TemplateModel {
     feature: string;
-    scenarios: Pickle[];
+    scenarios: ScenarioModel[];
+}
+
+export interface ScenarioModel {
+    name: string;
+    steps: Array<{
+        text: string;
+        func: string | null;
+    }>;
 }
 
 export default class Template {

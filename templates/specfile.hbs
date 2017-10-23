@@ -2,10 +2,15 @@ describe(`{{{feature}}}`, () => {
     {{#each scenarios}}
     describe(`{{{name}}}`, () => {
         {{#each steps}}
+        {{#if func}}
+        it(`{{{text}}}`, {{{func}}}
+        );
+        {{else}}
         it(`{{{text}}}`, () => {
             // Fill in your steps.
-        })
+        });
+        {{/if}}
         {{/each}}
-    })
+    });
     {{/each}}
 });

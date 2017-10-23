@@ -92,5 +92,7 @@ interface Pickle {
 interface PickleStep {
     arguments?: string[];
     text: string;
-    type: string;
+    type: StepKeyword;
 }
+
+type StepKeyword = 'Given' | 'When' | 'Then' | 'And';
