@@ -40,6 +40,12 @@ Steps files should contain functions that match the cucumber keywords. Keywords 
 * When
 * Then
 * And
+
+Function structure then follows this interface: 
+```
+Keyword(regex, function)
+```
+
 ```js
 Given(/^a variable set to '(.+)'$/, () => {
     var test = $1;
@@ -52,4 +58,26 @@ When(/^I increment the variable by '(.+)'$/, () => {
 Then(/^the variable should contain '(.+)'/, () => {
     assert(test).equal($1);
 })
+```
+
+### Output file
+The output file then has functions that matches a mocha (cypress) style suite.
+```js
+describe(`Simple maths`, () => {
+    describe(`easy maths`, () => {
+        it(`Given a variable set to '1'`, () => {
+            var test = 1;
+        }
+        );
+        it(`When I increment the variable by '1'`, () => {
+            console.log(1);
+        }
+        );
+        it(`Then the variable should contain 2`, () => {
+            assert(test).equal(2);
+        }
+        );
+    });
+    // Shortened for brevity 
+});
 ```
