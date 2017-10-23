@@ -1,12 +1,15 @@
 {
-  "name": "gherkin-transpile",
+  "name": "gherkinizer",
   "version": "0.0.0",
   "description": "",
   "main": "lib/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "bin": {
+    "gherkinizer": "bin/gherkinizer"
   },
-  "author": "",
+  "scripts": {
+  
+  },
+  "author": "Jonathan Cammisuli <jon@cammisuli.ca>",
   "license": "ISC",
   "devDependencies": {
     "@types/glob": "^5.0.33",

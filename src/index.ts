@@ -10,7 +10,7 @@ import Template, { ScenarioModel, TemplateModel } from './template';
 
 const GLOB_PATH = process.argv[2] || '**/*.feature';
 const STEPS_FILE = process.argv[3] || 'sample/steps.js';
-const FEATURE_FILES_PATH = process.argv[4] || '../specs';
+const FEATURE_FILES_PATH = process.argv[4] || 'specs/';
 const TEMPLATE_FILE = path.join(__dirname, '../templates/specfile.hbs');
 
 const readfileAsync = util.promisify(fs.readFile);
@@ -104,7 +104,7 @@ class Main {
 
     private _writeSpecFile(fileName: string, specFile: string): Promise<void> {
         fileName = fileName.replace(/\s/g, '_');
-        const specPath = path.join(__dirname, FEATURE_FILES_PATH);
+        const specPath = FEATURE_FILES_PATH;
         try {
             fs.statSync(specPath);
         } catch {
