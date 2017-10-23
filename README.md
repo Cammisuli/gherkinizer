@@ -1,4 +1,4 @@
-# Transpile
+# gherkinizer
 Takes cucumber feature files and creates generated spec.js files for use in Cypress
 
 ## Usage
