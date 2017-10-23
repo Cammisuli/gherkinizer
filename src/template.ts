@@ -1,5 +1,10 @@
 import { compile } from 'handlebars';
 
+interface TemplateModel {
+    feature: string;
+    scenarios: Pickle[];
+}
+
 export default class Template {
 
     private _template: HandlebarsTemplateDelegate;
@@ -8,7 +13,7 @@ export default class Template {
         this._template = compile(templateFilePath);
     }
 
-    public create(model: Pickle[]) {
+    public create(model: TemplateModel) {
         return this._template(model);
     }
 }

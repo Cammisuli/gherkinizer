@@ -92,4 +92,5 @@ interface Pickle {
 interface PickleStep {
     arguments?: string[];
     text: string;
+    type: string;
 }

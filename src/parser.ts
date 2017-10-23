@@ -62,7 +62,8 @@ export default class CucumberParser {
                     const steps = scenarioOutline.steps.map<PickleStep>((scenarioStep) => {
                         const stepText = this._interpolate(scenarioStep.text, variableCells, valueCells);
                         return {
-                            text: scenarioStep.keyword + stepText
+                            text: scenarioStep.keyword + stepText,
+                            type: scenarioStep.keyword.trim()
                         };
                     });
                     return {
@@ -76,7 +77,8 @@ export default class CucumberParser {
 
     private _pickleStep(step: GherkinStep): PickleStep {
         return {
-            text: step.keyword + step.text
+            text: step.keyword + step.text,
+            type: step.keyword.trim()
         };
     }
 
