@@ -103,7 +103,7 @@ class Main {
     }
 
     private _writeSpecFile(fileName: string, specFile: string): Promise<void> {
-        fileName = fileName.replace(' ', '_');
+        fileName = fileName.replace(/\s/g, '_');
         const specPath = path.join(__dirname, FEATURE_FILES_PATH);
         try {
             fs.statSync(specPath);

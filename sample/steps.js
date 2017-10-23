@@ -5,3 +5,7 @@ Given(/^a variable set to '(.+)'$/, () => {
 When(/^I increment the variable by '(.+)'$/, () => {
     console.log($1);
 })
+
+Then(/^the variable should contain (.+)/, () => {
+    assert(test).equal($1);
+})
