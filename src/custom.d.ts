@@ -66,10 +66,9 @@ interface GherkinTableCell {
 interface GherkinBase<T> {
     description?: string;
     /**
-     * Contains `Given `, `Then `, `When `.
-     * Make sure to trim
+     * Contains `Given `, `Then `, `When ` and `And `.
      */
-    keyword: string;
+    keyword: StepKeyword;
     location: GherkinLocation;
     name: string;
     type: T;

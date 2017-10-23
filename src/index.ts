@@ -67,7 +67,10 @@ class Main {
         templateModel.scenarios = pickles.reduce<ScenarioModel[]>((model, pickle) => {
             const scenarioModel: ScenarioModel = {
                 name: pickle.name,
-                steps: pickle.steps.map((p) => ({ text: p.text, func: this._mapStepFunc(p) }))
+                steps: pickle.steps.map((p) => ({
+                    func: this._mapStepFunc(p),
+                    text: `${p.type} ${p.text}`
+                }))
             };
             return [...model, scenarioModel];
         }, []);
