@@ -1,17 +1,18 @@
-describe(`{{{feature}}}`, () => {
-    {{#each scenarios}}
+describe(`{{feature}}`, () => {
+    {{#scenarios}}
     describe(`{{{name}}}`, () => {
-        {{#each steps}}
-        {{#if func}}
+        {{#steps}}
+        {{#func}}
         it(`{{{text}}}`, {{{func}}});
-        {{else}}
+        {{/func}}
+        {{^func}}
         it(`{{{text}}}`, () => {
             /**
              * Please fill in your steps. Use your steps.js file.
              */
         });
-        {{/if}}
-        {{/each}}
+        {{/func}}
+        {{/steps}}
     });
-    {{/each}}
+    {{/scenarios}}
 });

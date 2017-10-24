@@ -11,7 +11,7 @@ import Template, { ScenarioModel, TemplateModel } from './template';
 const GLOB_PATH = process.argv[2] || '**/*.feature';
 const STEPS_FILE = process.argv[3] || 'sample/steps.js';
 const FEATURE_FILES_PATH = process.argv[4] || 'specs/';
-const TEMPLATE_FILE = path.join(__dirname, '../templates/specfile.hbs');
+const TEMPLATE_FILE = path.join(__dirname, '../templates/specfile.mustache');
 
 const readfileAsync = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
@@ -65,11 +65,20 @@ class Main {
         });
     }
 
+    /**
+     * Parses feature files using Gherkin
+     * @param featureFilePath Feature file
+     */
     private async _parseFeatureFiles(featureFilePath: string): Promise<{ doc: GherkinDocument, pickles: Pickle[] }> {
         const fileContent = await readfileAsync(featureFilePath);
         return this._cucumber.parse(fileContent.toString());
     }
 
+    /**
+     * Takes a `GherkinDocument` and `Pickle`s, to translate it to a model used for templating
+     * @param doc Parsed feature file
+     * @param pickles Pickled Gherkin Document
+     */
     private _createSpecFile(doc: GherkinDocument, pickles: Pickle[]): string {
         const templateModel: TemplateModel = {
             feature: doc.feature.name,
@@ -90,6 +99,19 @@ class Main {
         return this._template.create(templateModel);
     }
 
+    /**
+     * Takes a `PickleStep` and matches it's type and text against the `StepsSandbox`.
+     * It will then return a function with replaced values.
+     *
+     * Functions in the `StepsSandbox` have the following interface:
+     * ```
+     * Keyword(regex, func)
+     * ```
+     *
+     * Values that are replaced are `$1`, `$2`, etc. These values should match the regex value.
+     *
+     * @param pickle Current step
+     */
     private _mapStepFunc(pickle: PickleStep): string | null {
         const definitions = StepsSandbox.get(pickle.type);
         const def = definitions.find((f) => f.regex.test(pickle.text));
@@ -114,6 +136,12 @@ class Main {
         return func;
     }
 
+    /**
+     * Takes a file name and a created template to write to the file system
+     *
+     * @param fileName File name
+     * @param specFile parsed template string
+     */
     private _writeSpecFile(fileName: string, specFile: string): Promise<void> {
         fileName = fileName.replace(/\s/g, '_');
         const specPath = FEATURE_FILES_PATH;
