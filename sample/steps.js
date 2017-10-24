@@ -7,5 +7,5 @@ When(/^I increment the variable by '(.+)'$/, () => {
 })
 
 Then(/^the variable should contain (.+)/, () => {
-    assert(test).equal($1);
+    assert($1).equal($1);
 })

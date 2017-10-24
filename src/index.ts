@@ -106,7 +106,7 @@ class Main {
              */
             const [, ...matches] = regexMatches;
             matches.forEach((match, index) => {
-                func = func.replace('$' + (index + 1), match);
+                func = func.replace(new RegExp('\\$' + (index + 1), 'g'), match);
             });
 
         }
