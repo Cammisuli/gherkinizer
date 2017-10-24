@@ -3,11 +3,12 @@ describe(`{{{feature}}}`, () => {
     describe(`{{{name}}}`, () => {
         {{#each steps}}
         {{#if func}}
-        it(`{{{text}}}`, {{{func}}}
-        );
+        it(`{{{text}}}`, {{{func}}});
         {{else}}
         it(`{{{text}}}`, () => {
-            // Fill in your steps.
+            /**
+             * Please fill in your steps. Use your steps.js file.
+             */
         });
         {{/if}}
         {{/each}}
