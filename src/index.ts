@@ -24,26 +24,38 @@ class Main {
     }
 
     public async run() {
-        const stepsFile = await readfileAsync(STEPS_FILE);
-        const templateFile = await readfileAsync(TEMPLATE_FILE);
-        this._cucumber = new CucumberParser();
-        this._template = new Template(templateFile.toString());
+        let stepsFile;
+        let templateFile;
+        try {
+            stepsFile = await readfileAsync(STEPS_FILE);
+            templateFile = await readfileAsync(TEMPLATE_FILE);
+            this._cucumber = new CucumberParser();
+            this._template = new Template(templateFile.toString());
 
-        // create steps in vm context
-        vm.runInNewContext(stepsFile.toString(), StepsSandbox);
+            // create steps in vm context
+            vm.runInNewContext(stepsFile.toString(), StepsSandbox);
+        } catch (exception) {
+            console.error(exception);
+            process.exit(1);
+        }
 
         const filePaths = await this._readGlob();
         filePaths.forEach(async (filePath) => {
-            const { doc, pickles } = await this._parseFeatureFiles(filePath);
-            const specFile = this._createSpecFile(doc, pickles);
-            await this._writeSpecFile(doc.feature.name, specFile);
+            try {
+                const { doc, pickles } = await this._parseFeatureFiles(filePath);
+                const specFile = this._createSpecFile(doc, pickles);
+                await this._writeSpecFile(doc.feature.name, specFile);
+            } catch (exception) {
+                console.error(exception);
+                process.exit(1);
+            }
         });
 
     }
 
     private async _readGlob(): Promise<string[]> {
         return new Promise<string[]>((res, rej) => {
-            glob(GLOB_PATH, (err, matches) => {
+            glob(GLOB_PATH, { ignore: 'node_modules/**' }, (err, matches) => {
                 if (matches.length > 0) {
                     res(matches);
                 } else {

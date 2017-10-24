@@ -6,9 +6,7 @@
   "bin": {
     "gherkinizer": "bin/gherkinizer"
   },
-  "scripts": {
-  
-  },
+  "scripts": {},
   "author": "Jonathan Cammisuli <jon@cammisuli.ca>",
   "license": "ISC",
   "devDependencies": {
