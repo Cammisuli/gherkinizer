@@ -1,17 +1,35 @@
 describe(`{{{feature}}}`, () => {
     {{#each scenarios}}
-    describe(`{{{name}}}`, () => {
-        {{#each steps}}
-        {{#if func}}
-        it(`{{{text}}}`, {{{func}}});
-        {{else}}
-        it(`{{{text}}}`, () => {
-            /**
-             * Please fill in your steps. Use your steps.js file.
-             */
+    {{#is type "Background"}}
+        beforeEach(`{{{name}}}`, () => {
+            {{#each steps}} 
+            {{#if func}}
+                {{{func}}};
+
+            {{else}}
+                /**
+                * Please create a step for '{{{text}}}'
+                */
+            {{/if}}
+            {{/each}}
+        })
+
+    {{/is}}
+    {{#is type "Scenario"}}
+        describe(`{{{name}}}`, () => {
+            {{#each steps}}
+                {{#if func}}
+                    it(`{{{text}}}`, {{{func}}});
+                {{else}}
+                    it(`{{{text}}}`, () => {
+                        /**
+                        * Please fill in your steps. Use your steps.js file.
+                        */
+                    });
+                {{/if}}
+            {{/each}}
         });
-        {{/if}}
-        {{/each}}
-    });
+
+    {{/is}}
     {{/each}}
 });

@@ -1,12 +1,12 @@
-Feature: Simple maths
-    In order to do maths
+Feature: Simple math
+    In order to do math
     As a developer
     I want to increment variables
 
     Background: Logging in
       Given I log in
 
-    Scenario: easy maths
+    Scenario: easy math
       Given a variable set to '1'
       When I increment the variable by '1'
       Then the variable should contain 2
