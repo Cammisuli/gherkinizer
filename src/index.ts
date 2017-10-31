@@ -11,7 +11,7 @@ import Template, { ScenarioModel, TemplateModel } from './template';
 const GLOB_PATH = process.argv[2] || '**/*.feature';
 const STEPS_FILE = process.argv[3] || 'sample/steps.js';
 const FEATURE_FILES_PATH = process.argv[4] || 'specs/';
-const TEMPLATE_FILE = path.join(__dirname, '../templates/specfile.mustache');
+const TEMPLATE_FILE = path.join(__dirname, '../templates/specfile.hbs');
 
 const readfileAsync = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
@@ -91,7 +91,8 @@ class Main {
                 steps: pickle.steps.map((p) => ({
                     func: this._mapStepFunc(p),
                     text: `${p.type} ${p.text}`
-                }))
+                })),
+                type: pickle.type
             };
             return [...model, scenarioModel];
         }, []);

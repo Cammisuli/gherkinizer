@@ -1,6 +1,5 @@
+import { compile } from 'handlebars';
 import { js_beautify } from 'js-beautify';
-import { render } from 'mustache';
-
 
 export interface TemplateModel {
     feature: string;
@@ -9,17 +8,23 @@ export interface TemplateModel {
 
 export interface ScenarioModel {
     name: string;
-    steps: Array<{
-        text: string;
-        func: string | null;
-    }>;
+    steps: ScenarioStep[];
+    type: 'Scenario' | 'Background';
+}
+
+interface ScenarioStep {
+    text: string;
+    func: string | null;
 }
 
 export default class Template {
-    constructor(private _templateFile: string) {
+    private _template: HandlebarsTemplateDelegate;
+
+    constructor(templateFilePath: string) {
+        this._template = compile(templateFilePath);
     }
 
     public create(model: TemplateModel) {
-        return js_beautify(render(this._templateFile, model));
+        return js_beautify(this._template(model));
     }
 }

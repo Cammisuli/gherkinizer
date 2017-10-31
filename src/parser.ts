@@ -27,7 +27,7 @@ export default class CucumberParser {
         const pickles: Pickle[] = [];
         doc.feature.children.forEach((scenario) => {
             if (scenario.type === 'Background') {
-                // TODO: do background?
+                pickles.push(this._compileScenario(scenario));
             } else if (scenario.type === 'Scenario') {
                 pickles.push(this._compileScenario(scenario));
             } else {
@@ -39,12 +39,13 @@ export default class CucumberParser {
         return pickles;
     }
 
-    private _compileScenario(scenario: GherkinScenario): Pickle {
+    private _compileScenario(scenario: GherkinScenario | GherkinBackground): Pickle {
         const steps: PickleStep[] = scenario.steps.map((step) => {
             return this._pickleStep(step);
         });
 
         return {
+            type: scenario.type,
             name: scenario.name,
             steps
         };
@@ -67,6 +68,7 @@ export default class CucumberParser {
                         };
                     });
                     return {
+                        type: 'Scenario',
                         name: this._interpolate(scenarioOutline.name, variableCells, valueCells),
                         steps
                     };

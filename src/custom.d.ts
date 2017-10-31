@@ -84,6 +84,7 @@ interface GherkinLocation {
  * IM PICKLE RIIIIIIICK
  */
 interface Pickle {
+    type: 'Background' | 'Scenario';
     name: string;
     steps: PickleStep[];
 }
