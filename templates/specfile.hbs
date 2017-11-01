@@ -4,7 +4,8 @@ describe(`{{{feature}}}`, () => {
         beforeEach(`{{{name}}}`, () => {
             {{#each steps}} 
             {{#if func}}
-                {{{func}}};
+               /** {{text}} */ 
+               {{{func}}};
 
             {{else}}
                 /**
@@ -16,16 +17,16 @@ describe(`{{{feature}}}`, () => {
 
     {{/is}}
     {{#is type "Scenario"}}
-        describe(`{{{name}}}`, () => {
+        it(`{{{name}}}`, () => {
             {{#each steps}}
                 {{#if func}}
-                    it(`{{{text}}}`, {{{func}}});
+                    /** {{{text}}} */
+                    {{{func}}}
                 {{else}}
-                    it(`{{{text}}}`, () => {
-                        /**
-                        * Please fill in your steps. Use your steps.js file.
-                        */
-                    });
+                    
+                     /**
+                     * Please create a step for '{{{text}}}'
+                     */
                 {{/if}}
             {{/each}}
         });

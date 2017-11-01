@@ -124,6 +124,12 @@ class Main {
         const regexMatches = pickle.text.match(def.regex);
         let func = def.func;
         if (regexMatches) {
+
+            /**
+             * If the function is a `Function` take the inner code without `() => { }` or `function() { }`
+             */
+            func = func.replace(/(^.*?\{|\}$)/g, '').trim();
+
             /**
              * Replace $1, $2, with all regex matches
              */
