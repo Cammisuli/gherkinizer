@@ -92,7 +92,11 @@ export class Main {
      */
     private _createSpecFile(doc: GherkinDocument, pickles: Pickle[]): string {
         const templateModel: TemplateModel = {
-            feature: doc.feature.name,
+            /**
+             * At this point we know that doc.feature is defined because we check with 
+             * `isNullOrUndefined` before calling this function
+             */
+            feature: doc.feature!.name,
             scenarios: []
         };
 
@@ -155,7 +159,7 @@ export class Main {
     }
 
     /**
-     * Takes a file name and a created template to write to the file system
+     * Takes a file name and a created template to write to the file system 
      *
      * @param fileName File name
      * @param specFile parsed template string
