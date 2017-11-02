@@ -16,7 +16,7 @@ declare module "gherkin" {
 
 interface GherkinDocument {
     comments: string[];
-    feature: GherkinFeature;
+    feature: GherkinFeature | undefined;
     type: 'GherkinDocument'
 }
 

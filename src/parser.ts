@@ -1,3 +1,5 @@
+import * as util from 'util';
+
 import { Compiler, Parser } from 'gherkin';
 
 export default class CucumberParser {
@@ -16,6 +18,7 @@ export default class CucumberParser {
      */
     public parse(fileContent: string): { doc: GherkinDocument, pickles: Pickle[] } {
         const doc = this._parser.parse(fileContent);
+
         const pickles = this.compile(doc);
         return {
             doc,
@@ -25,15 +28,17 @@ export default class CucumberParser {
 
     public compile(doc: GherkinDocument): Pickle[] {
         const pickles: Pickle[] = [];
-        doc.feature.children.forEach((scenario) => {
-            if (scenario.type === 'Background') {
-                pickles.push(this._compileScenario(scenario));
-            } else if (scenario.type === 'Scenario') {
-                pickles.push(this._compileScenario(scenario));
-            } else {
-                pickles.push(...this._compileScenarioOutline(scenario));
-            }
-        });
+        if (!util.isNullOrUndefined(doc.feature)) {
+            doc.feature.children.forEach((scenario) => {
+                if (scenario.type === 'Background') {
+                    pickles.push(this._compileScenario(scenario));
+                } else if (scenario.type === 'Scenario') {
+                    pickles.push(this._compileScenario(scenario));
+                } else {
+                    pickles.push(...this._compileScenarioOutline(scenario));
+                }
+            });
+        }
 
         // return new reference of pickles
         return pickles;

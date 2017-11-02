@@ -2,7 +2,7 @@
   "name": "gherkinizer",
   "version": "0.0.0",
   "description": "",
-  "main": "lib/index.js",
+  "main": "lib/main.js",
   "bin": {
     "gherkinizer": "bin/gherkinizer"
   },
@@ -19,10 +19,12 @@
   },
   "dependencies": {
     "@types/handlebars": "^4.0.36",
+    "@types/yargs": "^8.0.2",
     "gherkin": "^5.0.0",
     "glob": "^7.1.2",
     "handlebars": "^4.0.11",
     "js-beautify": "^1.7.4",
-    "mustache": "^2.3.0"
+    "mustache": "^2.3.0",
+    "yargs": "^10.0.3"
   }
 }
