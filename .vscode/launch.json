@@ -7,12 +7,27 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Launch Spec creation",
             "program": "${workspaceFolder}/src/index.ts",
             "args": [
-                "sample/**/*.feature",
+                "sample/**/myFeature.feature",
                 "sample/steps.js", 
                 "specs/"
+            ],
+            "outFiles": [
+                "${workspaceFolder}/**/*.js"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Steps creation",
+            "program": "${workspaceFolder}/src/index.ts",
+            "args": [
+                "sample/**/myFeature.feature",
+                "sample/steps.js", 
+                "sample/steps",
+                "--steps"
             ],
             "outFiles": [
                 "${workspaceFolder}/**/*.js"

@@ -11,7 +11,7 @@ import Template, { ScenarioModel, TemplateModel } from './template';
 const readfileAsync = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
 
-export class Main {
+export default class Main {
     private _template: Template;
     private _cucumber: CucumberParser;
 
@@ -34,40 +34,51 @@ export class Main {
     }
 
     public async run() {
-        let stepsFile;
-        let templateFile;
+
         try {
-            stepsFile = await readfileAsync(this.STEPS_FILE);
-            templateFile = await readfileAsync(this.TEMPLATE_FILE);
+            const stepFileBuffer = await this._readStepFiles();
+            const templateFileBuffer = await readfileAsync(this.TEMPLATE_FILE);
             this._cucumber = new CucumberParser();
-            this._template = new Template(templateFile.toString());
+            this._template = new Template(templateFileBuffer.toString());
 
             // create steps in vm context
-            vm.runInNewContext(stepsFile.toString(), StepsSandbox);
-        } catch (exception) {
-            console.error(exception);
-            process.exit(1);
-        }
+            vm.runInNewContext(stepFileBuffer.toString(), StepsSandbox);
 
-        const filePaths = await this._readGlob();
-        filePaths.forEach(async (filePath) => {
-            try {
+            const filePaths = await this._readGlob(this.GLOB_PATH);
+            filePaths.forEach(async (filePath) => {
                 const { doc, pickles } = await this._parseFeatureFiles(filePath);
                 if (!util.isNullOrUndefined(doc.feature)) {
                     const specFile = this._createSpecFile(doc, pickles);
                     await this._writeSpecFile(doc.feature.name, specFile);
                 }
-            } catch (exception) {
-                console.error(exception);
-                process.exit(1);
-            }
-        });
+            });
+
+        } catch (exception) {
+            console.error(exception);
+            process.exit(1);
+        }
 
     }
 
-    private async _readGlob(): Promise<string[]> {
+    private async _readStepFiles(): Promise<Buffer> {
+        return new Promise<Buffer>(async (res, rej) => {
+            let stepFileBuffer: Buffer = new Buffer('');
+
+            const newLine = new Buffer('\n');
+
+            const stepFilePaths = await this._readGlob(this.STEPS_FILE);
+            stepFilePaths.forEach(async (filePath, index, array) => {
+                stepFileBuffer = Buffer.concat([stepFileBuffer, newLine, await readfileAsync(filePath)]);
+                if (index === array.length - 1) {
+                    res(stepFileBuffer);
+                }
+            });
+        });
+    }
+
+    private async _readGlob(fileGlob: string): Promise<string[]> {
         return new Promise<string[]>((res, rej) => {
-            glob(this.GLOB_PATH, { ignore: 'node_modules/**' }, (err, matches) => {
+            glob(fileGlob, { ignore: 'node_modules/**' }, (err, matches) => {
                 if (matches.length > 0) {
                     res(matches);
                 } else {
