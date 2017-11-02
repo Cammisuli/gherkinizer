@@ -27,7 +27,8 @@ export class Main {
         private GLOB_PATH: string,
         private STEPS_FILE: string,
         private PATH_OUT_DIR: string,
-        private TEMPLATE_FILE: string
+        private TEMPLATE_FILE: string,
+        private STEP_MODE: boolean = false
     ) {
         // nothing needed
     }

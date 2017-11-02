@@ -10,7 +10,9 @@
             "name": "Launch Program",
             "program": "${workspaceFolder}/src/index.ts",
             "args": [
-                "sample/**/*.feature"
+                "sample/**/*.feature",
+                "sample/steps.js", 
+                "specs/"
             ],
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
