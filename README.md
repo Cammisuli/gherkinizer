@@ -1,13 +1,23 @@
 # gherkinizer
-Takes cucumber feature files and creates generated spec.js files for use in Cypress
+Takes cucumber feature files and creates generated spec.js files for use in Cypress.
+
+It also allows for the creation of step files with a concept of reusable scenarios. This allow us to create steps that have steps within them.
 
 ## Usage
-Takes three arguements (in order)
+For spec creation, takes three arguments (in order)
 * Source files glob. Files that should be 'gherkinized'
 * File where steps are location
 * Out directory
 
 `gherkinizer **/*.feature steps.js outdir`
+
+For step creation, takes four arguments (in order)
+* --steps
+* Source files glob. Files that should be 'gherkinized'
+* File where steps are location
+* Out directory
+
+`gherkinizer --steps **/*.feature steps.js outdir`
 
 ### Feature File
 Basic structure of a cucumber .feature file
