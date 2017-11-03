@@ -7,3 +7,10 @@ When(/^I increment the variable by '(.+)'$/, () => {
 Then(/^the variable should contain (.+)/, () => {
     assert($1).equal($1);
 })
+
+/**
+ * Sample
+ */
+Step(/^I do something else$/, () => {
+    document.querySelectorAll('input').click();
+})

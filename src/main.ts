@@ -141,7 +141,7 @@ export default class Main {
      * @param pickle Current step
      */
     private _mapStepFunc(pickle: PickleStep): string | null {
-        const definitions = StepsSandbox.get(pickle.type);
+        const definitions = [...StepsSandbox.get(pickle.type), ...StepsSandbox.get('Step')];
         const def = definitions.find((f) => f.regex.test(pickle.text));
 
         if (!def) {

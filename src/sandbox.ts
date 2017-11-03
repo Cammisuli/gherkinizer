@@ -13,7 +13,9 @@ const STEP_MAP: Map<StepKeyword, StepDefinition[]> = new Map<StepKeyword, StepDe
     ['Given', []],
     ['When', []],
     ['Then', []],
-    ['And', []]
+    ['And', []],
+    ['But', []],
+    ['Step', []]
 ]);
 
 export default class StepsSandbox {
@@ -36,5 +38,13 @@ export default class StepsSandbox {
 
     public static And(regex: RegExp, func: Func) {
         STEP_MAP.get('And')!.push({ regex, func: func.toString() });
+    }
+
+    public static But(regex: RegExp, func: Func) {
+        STEP_MAP.get('But')!.push({regex, func: func.toString()});
+    }
+
+    public static Step(regex: RegExp, func: Func) {
+        STEP_MAP.get('Step')!.push({regex, func: func.toString()});
     }
 }

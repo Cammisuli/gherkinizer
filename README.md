@@ -21,11 +21,13 @@ Feature: Simple maths
       Given a variable set to '1'
       When I increment the variable by '1'
       Then the variable should contain 2
+      And I do something else
   
     Scenario Outline: much more complex stufff
       Given a variable set to '<var>'
       When I increment the variable by '<increment>'
       Then the variable should contain <result>
+      But I do something else
   
       Examples:
         | var | increment | result |
@@ -40,6 +42,8 @@ Steps files should contain functions that match the cucumber keywords. Keywords 
 * When
 * Then
 * And
+* But
+* Step **This keyword is a catch all, so it can be used for all above steps**
 
 Function structure then follows this interface: 
 ```
@@ -58,25 +62,26 @@ When(/^I increment the variable by '(.+)'$/, () => {
 Then(/^the variable should contain '(.+)'/, () => {
     assert(test).equal($1);
 })
+
+Step(/^I do something else$/, () => {
+    document.querySelectorAll('input').click();
+})
 ```
 
 ### Output file
 The output file then has functions that matches a mocha (cypress) style suite.
 ```js
 describe(`Simple maths`, () => {
-    describe(`easy maths`, () => {
-        it(`Given a variable set to '1'`, () => {
-            var test = 1;
-        }
-        );
-        it(`When I increment the variable by '1'`, () => {
-            console.log(1);
-        }
-        );
-        it(`Then the variable should contain 2`, () => {
-            assert(test).equal(2);
-        }
-        );
+    it(`easy maths`, () => {
+        // Given a variable set to '1'`
+        var test = 1;
+        
+        // When I increment the variable by '1'
+        console.log(1);
+        // Then the variable should contain 2
+         assert(test).equal(2);
+        // And I do something else
+        document.querySelectorAll('input').click();
     });
     // Shortened for brevity 
 });

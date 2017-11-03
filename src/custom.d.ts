@@ -95,4 +95,4 @@ interface PickleStep {
     type: StepKeyword;
 }
 
-type StepKeyword = 'Given' | 'When' | 'Then' | 'And';
+type StepKeyword = 'Given' | 'When' | 'Then' | 'And' | 'But' | 'Step';
