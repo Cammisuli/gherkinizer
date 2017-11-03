@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import * as path from 'path';
 import * as util from 'util';
@@ -8,9 +8,6 @@ import CucumberParser from './parser';
 import StepsSandbox from './sandbox';
 import Template, { ScenarioModel, TemplateModel } from './template';
 
-const readfileAsync = util.promisify(fs.readFile);
-const writeFileAsync = util.promisify(fs.writeFile);
-
 export default class Main {
     private _template: Template;
     private _cucumber: CucumberParser;
@@ -19,27 +16,44 @@ export default class Main {
      * Takes feature files, matches steps to a step definition file and outputs parsed templates
      *
      * @param GLOB_PATH Glob path used to retrieve all feature files to parse
-     * @param STEPS_FILE Steps file used to match gherkin keywords to steps
+     * @param STEPS Steps file used to match gherkin keywords to steps. 
+     * If creating step files, then this is the output directory
      * @param PATH_OUT_DIR Out directory where parsed spec files are put
      * @param TEMPLATE_FILE Template file used to output files
      */
     constructor(
         private GLOB_PATH: string,
-        private STEPS_FILE: string,
-        private PATH_OUT_DIR: string,
-        private TEMPLATE_FILE: string,
-        private STEP_MODE: boolean = false
+        private STEPS: string,
+        private PATH_OUT_DIR: string
     ) {
         // nothing needed
     }
 
-    public async run() {
+    /**
+     * Creates step files by reading a common feature file. (Reusable scenarios)
+     * 
+     * @param templateFilePath Path to template file used to create step files
+     */
+    public async createSteps(templateFilePath: string) {
+        try {
+            await this._createTemplate(templateFilePath);
+
+        } catch (exception) {
+            console.error(exception);
+            process.exit(1);
+        }
+    }
+
+    /**
+     * Creates spec files by reading cucumber feature files.
+     * 
+     * @param templateFilePath Path to the template file used to create spec files
+     */
+    public async createSpecs(templateFilePath: string) {
 
         try {
+            await this._createTemplate(templateFilePath);
             const stepFileBuffer = await this._readStepFiles();
-            const templateFileBuffer = await readfileAsync(this.TEMPLATE_FILE);
-            this._cucumber = new CucumberParser();
-            this._template = new Template(templateFileBuffer.toString());
 
             // create steps in vm context
             vm.runInNewContext(stepFileBuffer.toString(), StepsSandbox);
@@ -49,7 +63,7 @@ export default class Main {
                 const { doc, pickles } = await this._parseFeatureFiles(filePath);
                 if (!util.isNullOrUndefined(doc.feature)) {
                     const specFile = this._createSpecFile(doc, pickles);
-                    await this._writeSpecFile(doc.feature.name, specFile);
+                    await this._writeFile(path.join(this.PATH_OUT_DIR, doc.feature.name), specFile);
                 }
             });
 
@@ -60,15 +74,26 @@ export default class Main {
 
     }
 
+    /**
+     * Creates the template parser
+     * 
+     * @param templateFilePath Template file path
+     */
+    private async _createTemplate(templateFilePath: string): Promise<void> {
+        const templateFileBuffer = await fs.readFile(templateFilePath);
+        this._cucumber = new CucumberParser();
+        this._template = new Template(templateFileBuffer.toString());
+    }
+
     private async _readStepFiles(): Promise<Buffer> {
         return new Promise<Buffer>(async (res, rej) => {
             let stepFileBuffer: Buffer = new Buffer('');
 
             const newLine = new Buffer('\n');
 
-            const stepFilePaths = await this._readGlob(this.STEPS_FILE);
+            const stepFilePaths = await this._readGlob(this.STEPS);
             stepFilePaths.forEach(async (filePath, index, array) => {
-                stepFileBuffer = Buffer.concat([stepFileBuffer, newLine, await readfileAsync(filePath)]);
+                stepFileBuffer = Buffer.concat([stepFileBuffer, newLine, await fs.readFile(filePath)]);
                 if (index === array.length - 1) {
                     res(stepFileBuffer);
                 }
@@ -93,7 +118,7 @@ export default class Main {
      * @param featureFilePath Feature file
      */
     private async _parseFeatureFiles(featureFilePath: string): Promise<{ doc: GherkinDocument, pickles: Pickle[] }> {
-        const fileContent = await readfileAsync(featureFilePath);
+        const fileContent = await fs.readFile(featureFilePath);
         return this._cucumber.parse(fileContent.toString());
     }
 
@@ -174,16 +199,10 @@ export default class Main {
      * Takes a file name and a created template to write to the file system 
      *
      * @param fileName File name
-     * @param specFile parsed template string
+     * @param templateOutput parsed template string
      */
-    private _writeSpecFile(fileName: string, specFile: string): Promise<void> {
+    private _writeFile(fileName: string, templateOutput: string): Promise<void> {
         fileName = fileName.replace(/\s/g, '_');
-        const specPath = this.PATH_OUT_DIR;
-        try {
-            fs.statSync(specPath);
-        } catch {
-            fs.mkdirSync(specPath);
-        }
-        return writeFileAsync(path.join(specPath, fileName + '.js'), specFile);
+        return fs.outputFile(fileName + '.js', templateOutput);
     }
 }

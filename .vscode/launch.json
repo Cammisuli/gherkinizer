@@ -24,10 +24,9 @@
             "name": "Launch Steps creation",
             "program": "${workspaceFolder}/src/index.ts",
             "args": [
-                "sample/**/myFeature.feature",
-                "sample/steps.js", 
-                "sample/steps",
-                "--steps"
+                "--steps",
+                "sample/**/commonScenarios.feature",
+                "sample/commonScenarioSteps"
             ],
             "outFiles": [
                 "${workspaceFolder}/**/*.js"

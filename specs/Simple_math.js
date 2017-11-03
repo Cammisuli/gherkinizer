@@ -12,6 +12,8 @@ describe(`Simple math`, () => {
         console.log(1);
         /** Then the variable should contain 2 */
         assert(2).equal(2);
+        /** And I do something else */
+        document.querySelectorAll('input').click();
     });
 
     it(`much more complex stuff`, () => {
@@ -21,6 +23,8 @@ describe(`Simple math`, () => {
         console.log(5);
         /** Then the variable should contain 105 */
         assert(105).equal(105);
+        /** But I do something else */
+        document.querySelectorAll('input').click();
     });
 
     it(`much more complex stuff`, () => {
@@ -30,6 +34,8 @@ describe(`Simple math`, () => {
         console.log(1234);
         /** Then the variable should contain 1333 */
         assert(1333).equal(1333);
+        /** But I do something else */
+        document.querySelectorAll('input').click();
     });
 
     it(`much more complex stuff`, () => {
@@ -39,6 +45,8 @@ describe(`Simple math`, () => {
         console.log(5);
         /** Then the variable should contain 18 */
         assert(18).equal(18);
+        /** But I do something else */
+        document.querySelectorAll('input').click();
     });
 
 });
