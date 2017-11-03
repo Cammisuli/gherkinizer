@@ -89,7 +89,8 @@ export default class Main {
 
             const stepFilePaths = await this._readGlob(this.STEPS);
             stepFilePaths.forEach(async (filePath, index, array) => {
-                stepFileBuffer = Buffer.concat([stepFileBuffer, newLine, await fs.readFile(filePath)]);
+                const readFile = await fs.readFile(filePath);
+                stepFileBuffer = Buffer.concat([stepFileBuffer, newLine, readFile]);
                 if (index === array.length - 1) {
                     res(stepFileBuffer);
                 }
