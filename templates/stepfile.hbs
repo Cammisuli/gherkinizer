@@ -1,0 +1,15 @@
+{{#each scenarios}}
+Step(/^{{{name}}}$/, () => {
+    {{#each steps}} 
+    {{#if func}}
+        /** {{{text}}} */ 
+        {{{func}}}
+
+    {{else}}
+        /**
+        * Please create a step for '{{{text}}}'
+        */
+    {{/if}}
+    {{/each}}
+})
+{{/each}}

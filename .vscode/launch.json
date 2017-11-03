@@ -26,7 +26,8 @@
             "args": [
                 "--steps",
                 "sample/**/commonScenarios.feature",
-                "sample/commonScenarioSteps"
+                "sample/steps.js", 
+                "sample/commonScenarioSteps/"
             ],
             "outFiles": [
                 "${workspaceFolder}/**/*.js"

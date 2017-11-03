@@ -35,13 +35,7 @@ export default class Main {
      * @param templateFilePath Path to template file used to create step files
      */
     public async createSteps(templateFilePath: string) {
-        try {
-            await this._createTemplate(templateFilePath);
-
-        } catch (exception) {
-            console.error(exception);
-            process.exit(1);
-        }
+       await this._start(templateFilePath, true);
     }
 
     /**
@@ -50,7 +44,10 @@ export default class Main {
      * @param templateFilePath Path to the template file used to create spec files
      */
     public async createSpecs(templateFilePath: string) {
+        await this._start(templateFilePath);
+    }
 
+    private async _start(templateFilePath: string, steps: boolean = false) {
         try {
             await this._createTemplate(templateFilePath);
             const stepFileBuffer = await this._readStepFiles();
@@ -62,8 +59,8 @@ export default class Main {
             filePaths.forEach(async (filePath) => {
                 const { doc, pickles } = await this._parseFeatureFiles(filePath);
                 if (!util.isNullOrUndefined(doc.feature)) {
-                    const specFile = this._createSpecFile(doc, pickles);
-                    await this._writeFile(path.join(this.PATH_OUT_DIR, doc.feature.name), specFile);
+                    const file = this._createTemplateFile(doc.feature.name, pickles, steps);
+                    await this._writeFile(path.join(this.PATH_OUT_DIR, doc.feature.name), file);
                 }
             });
 
@@ -71,7 +68,6 @@ export default class Main {
             console.error(exception);
             process.exit(1);
         }
-
     }
 
     /**
@@ -123,23 +119,31 @@ export default class Main {
     }
 
     /**
-     * Takes a `GherkinDocument` and `Pickle`s, to translate it to a model used for templating
-     * @param doc Parsed feature file
+     * Takes a feature name and `Pickle`s, to translate it to a model used for templating a **spec** file
+     * @param feature Name of the feature
      * @param pickles Pickled Gherkin Document
+     * @param stepFile If true, template model will match a step file
      */
-    private _createSpecFile(doc: GherkinDocument, pickles: Pickle[]): string {
+    private _createTemplateFile(feature: string, pickles: Pickle[], stepFile: boolean = false): string {
         const templateModel: TemplateModel = {
             /**
              * At this point we know that doc.feature is defined because we check with 
              * `isNullOrUndefined` before calling this function
              */
-            feature: doc.feature!.name,
+            feature,
             scenarios: []
+        };
+
+        const createName = (name: string) => {
+            if (stepFile) {
+                return name.replace(/\$\d+/g, '(.+)');
+            }
+            return name;
         };
 
         templateModel.scenarios = pickles.reduce<ScenarioModel[]>((model, pickle) => {
             const scenarioModel: ScenarioModel = {
-                name: pickle.name,
+                name: createName(pickle.name),
                 steps: pickle.steps.map((p) => ({
                     func: this._mapStepFunc(p),
                     text: `${p.type} ${p.text}`

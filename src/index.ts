@@ -14,9 +14,6 @@ const argv = yargs
 
 const GLOB_PATH = argv._[0] || '**/*.feature';
 const STEPS = argv._[1] || 'sample/steps.js';
-/**
- * OUTPUT_DIR is only used for spec file creation. It is not needed for step creation
- */
 const OUTPUT_DIR = argv._[2] || 'specs/';
 
 (async () => {
