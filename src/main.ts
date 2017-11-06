@@ -1,8 +1,8 @@
-import * as fs from 'fs-extra';
-import * as glob from 'glob';
-import * as path from 'path';
-import * as util from 'util';
-import * as vm from 'vm';
+import fs from 'fs-extra';
+import glob from 'glob';
+import path from 'path';
+import util from 'util';
+import vm from 'vm';
 
 import CucumberParser from './parser';
 import StepsSandbox from './sandbox';

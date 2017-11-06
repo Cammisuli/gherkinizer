@@ -10,6 +10,7 @@
   "author": "Jonathan Cammisuli <jon@cammisuli.ca>",
   "license": "ISC",
   "devDependencies": {
+    "@types/chokidar": "^1.7.3",
     "@types/glob": "^5.0.33",
     "@types/js-beautify": "0.0.31",
     "@types/mustache": "^0.8.30",
@@ -21,6 +22,7 @@
     "@types/fs-extra": "^4.0.3",
     "@types/handlebars": "^4.0.36",
     "@types/yargs": "^8.0.2",
+    "chokidar": "^1.7.0",
     "fs-extra": "^4.0.2",
     "gherkin": "^5.0.0",
     "glob": "^7.1.2",
