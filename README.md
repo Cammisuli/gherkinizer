@@ -21,7 +21,9 @@ For step creation, takes four arguments (in order)
 
 ### Watch mode
 Using watch mode, gherkinizer will watch all feature files and output any changes to those files.
+
 `gherkinizer -w **/*.feature steps.js outdir`
+
 `gherkinizer -w --steps **/*.feature steps.js outdir`
 
 ### Feature File
