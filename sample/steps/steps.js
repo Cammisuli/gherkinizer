@@ -36,7 +36,7 @@ defineStep(/^I click on '(.*)'$/, () => {
 	cy.get('$1').click();
 })
 
-defineStep(/^I enter text '(.+?)({.+)' into '(.*)'$/, () => {
+defineStep(/^I enter text '(.+?)({.+)?' into '(.*)'$/, () => {
 	var e = cy.get('$3');
 	e.type('$1');
 	if ('$2' != 'undefined') {

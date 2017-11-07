@@ -1,3 +1,6 @@
+/**
+ * THIS IS AN AUTO GENERATED FILE, PLEASE DO NOT EDIT
+ */
 defineStep(/^I open the MobiControl login page$/, () => {
     cy.visit('https://localhost/MobiControl/WebConsole/login');
 
@@ -7,18 +10,18 @@ defineStep(/^I open the MobiControl devices page$/, () => {
 
 })
 defineStep(/^I enter username '(.+)'$/, () => {
-    var e = cy.get('$3');
+    var e = cy.get('[placeholder="Username"]');
     e.type('$1');
-    if ('[placeholder="Username"]' != 'undefined') {
-        e.type('[placeholder="Username"]');
+    if ('undefined' != 'undefined') {
+        e.type('undefined');
     }
 
 })
 defineStep(/^I enter password '(.+)'$/, () => {
-    var e = cy.get('$3');
+    var e = cy.get('[placeholder="Password"]');
     e.type('$1');
-    if ('[placeholder="Password"]' != 'undefined') {
-        e.type('[placeholder="Password"]');
+    if ('undefined' != 'undefined') {
+        e.type('undefined');
     }
 
 })
@@ -31,10 +34,10 @@ defineStep(/^I click on the search entry box$/, () => {
 
 })
 defineStep(/^I enter search field '(.+)'$/, () => {
-    var e = cy.get('$3');
-    e.type('$1{enter}');
-    if ('.search-input .input[tabindex="1"]' != 'undefined') {
-        e.type('.search-input .input[tabindex="1"]');
+    var e = cy.get('.search-input .input[tabindex="1"]');
+    e.type('$1');
+    if ('{enter}' != 'undefined') {
+        e.type('{enter}');
     }
 
 })
@@ -43,10 +46,10 @@ defineStep(/^I choose the search operator '(.+)'$/, () => {
 
 })
 defineStep(/^I enter search value '(.+)'$/, () => {
-    var e = cy.get('$3');
+    var e = cy.get('.search-input .input[tabindex="3"]');
     e.type('$1');
-    if ('.search-input .input[tabindex="3"]' != 'undefined') {
-        e.type('.search-input .input[tabindex="3"]');
+    if ('undefined' != 'undefined') {
+        e.type('undefined');
     }
 
 })

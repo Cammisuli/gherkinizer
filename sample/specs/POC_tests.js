@@ -1,3 +1,7 @@
+/**
+ * THIS IS AN AUTO GENERATED FILE, PLEASE DO NOT EDIT
+ */
+
 describe(`POC tests`, () => {
     beforeEach(``, () => {
         /** Given I initialize the test environment for feature 'POC_tests' */
@@ -11,17 +15,17 @@ describe(`POC tests`, () => {
         cy.visit('https://localhost/MobiControl/WebConsole/login');;
 
         /** And I enter username '1' */
-        var e = cy.get('$3');
+        var e = cy.get('[placeholder="Username"]');
         e.type('1');
-        if ('[placeholder="Username"]' != 'undefined') {
-            e.type('[placeholder="Username"]');
+        if ('undefined' != 'undefined') {
+            e.type('undefined');
         };
 
         /** And I enter password '1' */
-        var e = cy.get('$3');
+        var e = cy.get('[placeholder="Password"]');
         e.type('1');
-        if ('[placeholder="Password"]' != 'undefined') {
-            e.type('[placeholder="Password"]');
+        if ('undefined' != 'undefined') {
+            e.type('undefined');
         };
 
         /** And I click on the LOG_IN button */
@@ -36,18 +40,18 @@ describe(`POC tests`, () => {
         /** When I click on the search entry box */
         cy.get('.TailCursorContent').click();
         /** And I enter search field 'Device Name' */
-        var e = cy.get('$3');
-        e.type('Device Name{enter}');
-        if ('.search-input .input[tabindex="1"]' != 'undefined') {
-            e.type('.search-input .input[tabindex="1"]');
+        var e = cy.get('.search-input .input[tabindex="1"]');
+        e.type('Device Name');
+        if ('{enter}' != 'undefined') {
+            e.type('{enter}');
         }
         /** And I choose the search operator 'is' */
         cy.get('soti-dropdown-node i.ngui-icon-operatoris').click();
         /** And I enter search value '12345' */
-        var e = cy.get('$3');
+        var e = cy.get('.search-input .input[tabindex="3"]');
         e.type('12345');
-        if ('.search-input .input[tabindex="3"]' != 'undefined') {
-            e.type('.search-input .input[tabindex="3"]');
+        if ('undefined' != 'undefined') {
+            e.type('undefined');
         }
         /** And I click on search DONE */
         cy.get('search-dropdown .primary').click();

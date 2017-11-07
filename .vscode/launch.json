@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/src/index.ts",
             "args": [
                 // "-w",
-                "sample/*/*.feature",
+                "sample/features/*.feature",
                 "sample/steps/**/*.js", 
                 "sample/specs/"
             ],
@@ -26,7 +26,7 @@
             "program": "${workspaceFolder}/src/index.ts",
             "args": [
                 "--steps",
-                "sample/common/reusableScenarios.feature",
+                "sample/features/common/reusableScenarios.feature",
                 "sample/steps/steps.js", 
                 "sample/steps/"
             ],

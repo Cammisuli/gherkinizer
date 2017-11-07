@@ -1,3 +1,7 @@
+/**
+ * THIS IS AN AUTO GENERATED FILE, PLEASE DO NOT EDIT
+ */
+
 describe(`Simple math`, () => {
     beforeEach(`Logging in`, () => {
         /**
