@@ -10,10 +10,10 @@
             "name": "Launch Spec creation",
             "program": "${workspaceFolder}/src/index.ts",
             "args": [
-                "-w",
-                "sample/**/myFeature.feature",
-                "sample/steps.js", 
-                "specs/"
+                // "-w",
+                "sample/*/*.feature",
+                "sample/steps/**/*.js", 
+                "sample/specs/"
             ],
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
@@ -26,9 +26,9 @@
             "program": "${workspaceFolder}/src/index.ts",
             "args": [
                 "--steps",
-                "sample/**/commonScenarios.feature",
-                "sample/steps.js", 
-                "sample/commonScenarioSteps/"
+                "sample/common/reusableScenarios.feature",
+                "sample/steps/steps.js", 
+                "sample/steps/"
             ],
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
