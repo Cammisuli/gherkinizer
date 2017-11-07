@@ -1,16 +1,19 @@
-import fs from 'fs-extra';
-import glob from 'glob';
-import path from 'path';
-import util from 'util';
-import vm from 'vm';
+import * as fs from 'fs-extra';
+import * as glob from 'glob';
+import * as path from 'path';
+import * as util from 'util';
+import * as vm from 'vm';
 
+import { log } from './helpers';
 import CucumberParser from './parser';
 import StepsSandbox from './sandbox';
 import Template, { ScenarioModel, TemplateModel } from './template';
+import Watcher from './watcher';
 
 export default class Main {
     private _template: Template;
     private _cucumber: CucumberParser;
+    private _watcher: Watcher;
 
     /**
      * Takes feature files, matches steps to a step definition file and outputs parsed templates
@@ -24,7 +27,8 @@ export default class Main {
     constructor(
         private GLOB_PATH: string,
         private STEPS: string,
-        private PATH_OUT_DIR: string
+        private PATH_OUT_DIR: string,
+        private WATCH_MODE: boolean
     ) {
         // nothing needed
     }
@@ -56,17 +60,34 @@ export default class Main {
             vm.runInNewContext(stepFileBuffer.toString(), StepsSandbox);
 
             const filePaths = await this._readGlob(this.GLOB_PATH);
+
             filePaths.forEach(async (filePath) => {
-                const { doc, pickles } = await this._parseFeatureFiles(filePath);
-                if (!util.isNullOrUndefined(doc.feature)) {
-                    const file = this._createTemplateFile(doc.feature.name, pickles, steps);
-                    await this._writeFile(path.join(this.PATH_OUT_DIR, doc.feature.name), file);
-                }
+                await this._outputFile(filePath, steps);
             });
+
+            if (this.WATCH_MODE) {
+                this._watcher = new Watcher([this.GLOB_PATH]);
+                this._watcher.on('change', (filePath) => this._outputFile(filePath, steps));
+                this._watcher.on('add', (filePath) => this._outputFile(filePath, steps));
+                log('Gherkinizer is now watching files');
+            }
 
         } catch (exception) {
             console.error(exception);
             process.exit(1);
+        }
+    }
+
+    /**
+     * Creates and outputs either spec or step files
+     * @param filePath Filepath of the featureFile
+     * @param steps Boolean to parse steps
+     */
+    private async _outputFile(filePath: string, steps: boolean) {
+        const { doc, pickles } = await this._parseFeatureFiles(filePath);
+        if (!util.isNullOrUndefined(doc.feature)) {
+            const file = this._createTemplateFile(doc.feature.name, pickles, steps);
+            await this._writeFile(path.join(this.PATH_OUT_DIR, doc.feature.name), file);
         }
     }
 

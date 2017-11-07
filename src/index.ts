@@ -8,7 +8,19 @@ import * as yargs from 'yargs';
  */
 const argv = yargs
     .usage('Usage: gherkinizer **/*.feature **/steps.js specs/')
-    .boolean('steps')
+    // .alias('w', 'watch')
+    // .boolean(['steps', 'watch'])
+    .options({
+        steps: {
+            default: false,
+            type: 'boolean'
+        },
+        watch: {
+            alias: 'w',
+            default: false,
+            type: 'boolean'
+        }
+    })
     .help()
     .argv;
 
@@ -17,7 +29,7 @@ const STEPS = argv._[1] || 'sample/steps.js';
 const OUTPUT_DIR = argv._[2] || 'specs/';
 
 (async () => {
-    const gherkinizer = new Main(GLOB_PATH, STEPS, OUTPUT_DIR);
+    const gherkinizer = new Main(GLOB_PATH, STEPS, OUTPUT_DIR, argv.watch);
     if (argv.steps) {
         await gherkinizer.createSteps(path.join(__dirname, '../templates/stepfile.hbs'));
     } else {

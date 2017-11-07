@@ -10,6 +10,7 @@
             "name": "Launch Spec creation",
             "program": "${workspaceFolder}/src/index.ts",
             "args": [
+                "-w",
                 "sample/**/myFeature.feature",
                 "sample/steps.js", 
                 "specs/"
