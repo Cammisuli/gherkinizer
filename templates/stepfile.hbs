@@ -1,5 +1,5 @@
 {{#each scenarios}}
-Step(/^{{{name}}}$/, () => {
+defineStep(/^{{{name}}}$/, () => {
     {{#each steps}} 
     {{#if func}}
         /** {{{text}}} */ 

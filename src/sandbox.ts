@@ -44,7 +44,7 @@ export default class StepsSandbox {
         STEP_MAP.get('But')!.push({regex, func: func.toString()});
     }
 
-    public static Step(regex: RegExp, func: Func) {
+    public static defineStep(regex: RegExp, func: Func) {
         STEP_MAP.get('Step')!.push({regex, func: func.toString()});
     }
 }

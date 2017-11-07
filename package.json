@@ -14,14 +14,14 @@
     "@types/glob": "^5.0.33",
     "@types/js-beautify": "0.0.31",
     "@types/mustache": "^0.8.30",
+    "@types/fs-extra": "^4.0.3",
+    "@types/handlebars": "^4.0.36",
     "@types/node": "^8.0.46",
+    "@types/yargs": "^8.0.2",
     "tslint": "^5.8.0",
     "typescript": "^2.5.3"
   },
   "dependencies": {
-    "@types/fs-extra": "^4.0.3",
-    "@types/handlebars": "^4.0.36",
-    "@types/yargs": "^8.0.2",
     "chokidar": "^1.7.0",
     "fs-extra": "^4.0.2",
     "gherkin": "^5.0.0",
