@@ -2,7 +2,7 @@ Feature: POC tests
 
 Background:
     Given I initialize the test environment for feature 'POC_tests'
-    And I open the MobiControl login page
+    And I open the login page
     And I enter username '1'
     And I enter password '1'
     And I click on the LOG_IN button

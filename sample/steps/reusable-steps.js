@@ -1,12 +1,12 @@
 /**
  * THIS IS AN AUTO GENERATED FILE, PLEASE DO NOT EDIT
  */
-defineStep(/^I open the MobiControl login page$/, () => {
-    cy.visit('https://localhost/MobiControl/WebConsole/login');
+defineStep(/^I open the login page$/, () => {
+    cy.visit('https://localhost/WebConsole/login');
 
 })
-defineStep(/^I open the MobiControl devices page$/, () => {
-    cy.visit('https://localhost/MobiControl/WebConsole/devices');
+defineStep(/^I open the devices page$/, () => {
+    cy.visit('https://localhost/WebConsole/devices');
 
 })
 defineStep(/^I enter username '(.+)'$/, () => {

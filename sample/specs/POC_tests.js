@@ -11,8 +11,8 @@ describe(`POC tests`, () => {
         // send feature name to e2e server
         //cy.request('POST', 'http://localhost:8282/actions/feature/POC_tests');;
 
-        /** And I open the MobiControl login page */
-        cy.visit('https://localhost/MobiControl/WebConsole/login');;
+        /** And I open the login page */
+        cy.visit('https://localhost/WebConsole/login');;
 
         /** And I enter username '1' */
         var e = cy.get('[placeholder="Username"]');

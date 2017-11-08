@@ -1,11 +1,11 @@
 Feature: reusable-steps
     This is a file to create reusable Scenarios
 
-Scenario: I open the MobiControl login page
-    Given I navigate to the url 'https://localhost/MobiControl/WebConsole/login'
+Scenario: I open the login page
+    Given I navigate to the url 'https://localhost/WebConsole/login'
 
-Scenario: I open the MobiControl devices page
-    Given I navigate to the url 'https://localhost/MobiControl/WebConsole/devices'
+Scenario: I open the devices page
+    Given I navigate to the url 'https://localhost/WebConsole/devices'
 
 Scenario: I enter username '$1'
     Given I enter text '$1' into '[placeholder="Username"]'
