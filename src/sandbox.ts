@@ -2,9 +2,9 @@
  * Sandbox used to evaluate step functions
  */
 
-type Func = (...args: any[]) => {};
+export type Func = (...args: any[]) => {};
 
-interface StepDefinition {
+export interface StepDefinition {
     regex: RegExp;
     func: string;
 }

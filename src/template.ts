@@ -12,7 +12,7 @@ export interface ScenarioModel {
     type: 'Scenario' | 'Background';
 }
 
-interface ScenarioStep {
+export interface ScenarioStep {
     text: string;
     func: string | null;
 }

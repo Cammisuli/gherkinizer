@@ -1,4 +1,4 @@
-import Main from './main';
+import Gherkinizer from './main';
 
 import * as path from 'path';
 import * as yargs from 'yargs';
@@ -29,10 +29,10 @@ const STEPS = argv._[1] || 'sample/steps.js';
 const OUTPUT_DIR = argv._[2] || 'specs/';
 
 (async () => {
-    const gherkinizer = new Main(GLOB_PATH, STEPS, OUTPUT_DIR, argv.watch);
+    const gherkinizer = new Gherkinizer(GLOB_PATH, STEPS, OUTPUT_DIR, argv.watch);
     if (argv.steps) {
-        await gherkinizer.createSteps(path.join(__dirname, '../templates/stepfile.hbs'));
+        await gherkinizer.createSteps();
     } else {
-        await gherkinizer.createSpecs(path.join(__dirname, '../templates/specfile.hbs'));
+        await gherkinizer.createSpecs();
     }
 })();

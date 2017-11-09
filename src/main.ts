@@ -10,7 +10,7 @@ import StepsSandbox from './sandbox';
 import Template, { ScenarioModel, TemplateModel } from './template';
 import Watcher from './watcher';
 
-export default class Main {
+export default class Gherkinizer {
     private _template: Template;
     private _cucumber: CucumberParser;
     private _watcher: Watcher;
@@ -38,8 +38,8 @@ export default class Main {
      * 
      * @param templateFilePath Path to template file used to create step files
      */
-    public async createSteps(templateFilePath: string) {
-       await this._start(templateFilePath, true);
+    public async createSteps() {
+       await this._start(path.join(__dirname, '../templates/stepfile.hbs'), true);
     }
 
     /**
@@ -47,8 +47,8 @@ export default class Main {
      * 
      * @param templateFilePath Path to the template file used to create spec files
      */
-    public async createSpecs(templateFilePath: string) {
-        await this._start(templateFilePath);
+    public async createSpecs() {
+        await this._start(path.join(__dirname, '../templates/specfile.hbs'));
     }
 
     private async _start(templateFilePath: string, steps: boolean = false) {
