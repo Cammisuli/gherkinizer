@@ -26,6 +26,15 @@ Using watch mode, gherkinizer will watch all feature files and output any change
 
 `gherkinizer -w --steps **/*.feature steps.js outdir`
 
+### Module
+You can include Gherkinizer in your node scripts by importing the module (in TypeScript, Babel or ESModules) like so:
+
+`import Gherkinizer from 'gherkinizer';`
+
+You can use CommonJS require like so:
+`const Gherkinizer = require('Gherkinizer').default;`
+
+
 ### Feature File
 Basic structure of a cucumber .feature file
 ```
