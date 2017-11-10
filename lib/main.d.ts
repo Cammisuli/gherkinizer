@@ -3,6 +3,7 @@ export default class Gherkinizer {
     private STEPS;
     private PATH_OUT_DIR;
     private WATCH_MODE;
+    private VERBOSE;
     private _template;
     private _cucumber;
     private _watcher;
@@ -15,7 +16,7 @@ export default class Gherkinizer {
      * @param PATH_OUT_DIR Out directory where parsed spec files are put
      * @param TEMPLATE_FILE Template file used to output files
      */
-    constructor(GLOB_PATH: string, STEPS: string, PATH_OUT_DIR: string, WATCH_MODE: boolean);
+    constructor(GLOB_PATH: string, STEPS: string, PATH_OUT_DIR: string, WATCH_MODE?: boolean, VERBOSE?: boolean);
     /**
      * Creates step files by reading a common feature file. (Reusable scenarios)
      *

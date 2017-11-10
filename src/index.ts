@@ -19,6 +19,11 @@ const argv = yargs
             alias: 'w',
             default: false,
             type: 'boolean'
+        },
+        verbose: {
+            alias: 'v',
+            default: false,
+            type: 'boolean'
         }
     })
     .help()
@@ -29,7 +34,7 @@ const STEPS = argv._[1] || 'sample/steps.js';
 const OUTPUT_DIR = argv._[2] || 'specs/';
 
 (async () => {
-    const gherkinizer = new Gherkinizer(GLOB_PATH, STEPS, OUTPUT_DIR, argv.watch);
+    const gherkinizer = new Gherkinizer(GLOB_PATH, STEPS, OUTPUT_DIR, argv.watch, argv.verbose);
     if (argv.steps) {
         await gherkinizer.createSteps();
     } else {

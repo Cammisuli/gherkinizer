@@ -10,7 +10,8 @@
         "no-console": false,
         "interface-name": false,
         "trailing-comma": false,
-        "no-trailing-whitespace": [true, "ignore-comments", "ignore-jsdoc", "ignore-blank-lines"]
+        "no-trailing-whitespace": [true, "ignore-comments", "ignore-jsdoc", "ignore-blank-lines"],
+        "object-literal-sort-keys": false
     },
     "rulesDirectory": []
 }

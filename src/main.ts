@@ -28,7 +28,8 @@ export default class Gherkinizer {
         private GLOB_PATH: string,
         private STEPS: string,
         private PATH_OUT_DIR: string,
-        private WATCH_MODE: boolean
+        private WATCH_MODE: boolean = false,
+        private VERBOSE: boolean = false
     ) {
         // nothing needed
     }
@@ -39,7 +40,10 @@ export default class Gherkinizer {
      * @param templateFilePath Path to template file used to create step files
      */
     public async createSteps() {
-       await this._start(path.join(__dirname, '../templates/stepfile.hbs'), true);
+        if (this.VERBOSE) {
+            log('Creating step files');
+        }
+        await this._start(path.join(__dirname, '../templates/stepfile.hbs'), true);
     }
 
     /**
@@ -48,6 +52,9 @@ export default class Gherkinizer {
      * @param templateFilePath Path to the template file used to create spec files
      */
     public async createSpecs() {
+        if (this.VERBOSE) {
+            log('Creating spec files');
+        }
         await this._start(path.join(__dirname, '../templates/specfile.hbs'));
     }
 
@@ -62,6 +69,9 @@ export default class Gherkinizer {
             const filePaths = await this._readGlob(this.GLOB_PATH);
 
             filePaths.forEach(async (filePath) => {
+                if (this.VERBOSE) {
+                    log('Reading feature file: ' + filePath);
+                }
                 await this._outputFile(filePath, steps);
             });
 
@@ -71,7 +81,6 @@ export default class Gherkinizer {
                 this._watcher.on('add', (filePath) => this._outputFile(filePath, steps));
                 log('Gherkinizer is now watching files');
             }
-
         } catch (exception) {
             console.error(exception);
             process.exit(1);
@@ -110,7 +119,10 @@ export default class Gherkinizer {
 
             const stepFilePaths = await this._readGlob(this.STEPS);
             stepFilePaths.forEach(async (filePath, index, array) => {
-                const readFile = await fs.readFile(filePath);
+                if (this.VERBOSE) {
+                    log('Reading step file: ' + filePath);
+                }
+                const readFile = fs.readFileSync(filePath);
                 stepFileBuffer = Buffer.concat([stepFileBuffer, newLine, readFile]);
                 if (index === array.length - 1) {
                     res(stepFileBuffer);
@@ -193,11 +205,21 @@ export default class Gherkinizer {
      */
     private _mapStepFunc(pickle: PickleStep): string | null {
         const definitions = [...StepsSandbox.get(pickle.type), ...StepsSandbox.get('Step')];
+        // if (this.VERBOSE) {
+        //     log('trying to match ' + pickle.text);
+        // }
         const def = definitions.find((f) => f.regex.test(pickle.text));
 
         if (!def) {
+            // if (this.VERBOSE) {
+            //     log('No step found for ' + pickle.text);
+            // }
             return null;
         }
+
+        // if (this.VERBOSE) {
+        //     log('Found match for ' + pickle.text);
+        // }
 
         const regexMatches = pickle.text.match(def.regex);
         let func = def.func;
