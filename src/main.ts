@@ -95,8 +95,9 @@ export default class Gherkinizer {
     private async _outputFile(filePath: string, steps: boolean) {
         const { doc, pickles } = await this._parseFeatureFiles(filePath);
         if (!util.isNullOrUndefined(doc.feature)) {
-            const file = this._createTemplateFile(doc.feature.name, pickles, steps);
-            await this._writeFile(path.join(this.PATH_OUT_DIR, doc.feature.name), file);
+            const filename = path.parse(filePath).name;
+            const file = this._createTemplateFile(doc.feature.name, filename, pickles, steps);
+            await this._writeFile(path.join(this.PATH_OUT_DIR, filename), file);
         }
     }
 
@@ -155,16 +156,18 @@ export default class Gherkinizer {
     /**
      * Takes a feature name and `Pickle`s, to translate it to a model used for templating a **spec** file
      * @param feature Name of the feature
+     * @param filename Feature file name (base name)
      * @param pickles Pickled Gherkin Document
      * @param stepFile If true, template model will match a step file
      */
-    private _createTemplateFile(feature: string, pickles: Pickle[], stepFile: boolean = false): string {
+    private _createTemplateFile(feature: string, filename: string, pickles: Pickle[], stepFile: boolean = false): string {
         const templateModel: TemplateModel = {
             /**
              * At this point we know that doc.feature is defined because we check with 
              * `isNullOrUndefined` before calling this function
              */
             feature,
+            filename,
             scenarios: []
         };
 

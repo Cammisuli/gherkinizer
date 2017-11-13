@@ -3,6 +3,7 @@ import { js_beautify } from 'js-beautify';
 
 export interface TemplateModel {
     feature: string;
+    filename: string;
     scenarios: ScenarioModel[];
 }
 

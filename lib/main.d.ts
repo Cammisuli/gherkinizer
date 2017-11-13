@@ -52,10 +52,11 @@ export default class Gherkinizer {
     /**
      * Takes a feature name and `Pickle`s, to translate it to a model used for templating a **spec** file
      * @param feature Name of the feature
+     * @param filename Feature file name (base name)
      * @param pickles Pickled Gherkin Document
      * @param stepFile If true, template model will match a step file
      */
-    private _createTemplateFile(feature, pickles, stepFile?);
+    private _createTemplateFile(feature, filename, pickles, stepFile?);
     /**
      * Takes a `PickleStep` and matches it's type and text against the `StepsSandbox`.
      * It will then return a function with replaced values.
