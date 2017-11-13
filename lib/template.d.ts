@@ -1,5 +1,6 @@
 export interface TemplateModel {
     feature: string;
+    filename: string;
     scenarios: ScenarioModel[];
 }
 export interface ScenarioModel {
