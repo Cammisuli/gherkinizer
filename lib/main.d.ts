@@ -6,7 +6,6 @@ export default class Gherkinizer {
     private VERBOSE;
     private _template;
     private _cucumber;
-    private _watcher;
     /**
      * Takes feature files, matches steps to a step definition file and outputs parsed templates
      *
@@ -29,7 +28,8 @@ export default class Gherkinizer {
      * @param templateFilePath Path to the template file used to create spec files
      */
     createSpecs(): Promise<void>;
-    private _start(templateFilePath, steps?);
+    private _start(steps?);
+    private _watchFiles(steps?);
     /**
      * Creates and outputs either spec or step files
      * @param filePath Filepath of the featureFile

@@ -9,7 +9,7 @@ export interface StepDefinition {
     func: string;
 }
 
-const STEP_MAP: Map<StepKeyword, StepDefinition[]> = new Map<StepKeyword, StepDefinition[]>([
+let STEP_MAP: Map<StepKeyword, StepDefinition[]> = new Map<StepKeyword, StepDefinition[]>([
     ['Given', []],
     ['When', []],
     ['Then', []],
@@ -46,5 +46,16 @@ export default class StepsSandbox {
 
     public static defineStep(regex: RegExp, func: Func) {
         STEP_MAP.get('Step')!.push({regex, func: func.toString()});
+    }
+
+    public static reset() {
+        STEP_MAP = new Map<StepKeyword, StepDefinition[]>([
+            ['Given', []],
+            ['When', []],
+            ['Then', []],
+            ['And', []],
+            ['But', []],
+            ['Step', []]
+        ]);
     }
 }

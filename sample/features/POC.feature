@@ -7,6 +7,8 @@ Background:
     And I enter password '1'
     And I click on the LOG_IN button
     And I wait for all api responses
+    And I do this thing
+    Then I do something else again
 
 Scenario: A search that returns no results
     When I click on the search entry box

@@ -13,7 +13,6 @@ import Watcher from './watcher';
 export default class Gherkinizer {
     private _template: Template;
     private _cucumber: CucumberParser;
-    private _watcher: Watcher;
 
     /**
      * Takes feature files, matches steps to a step definition file and outputs parsed templates
@@ -43,7 +42,10 @@ export default class Gherkinizer {
         if (this.VERBOSE) {
             log('Creating step files');
         }
-        await this._start(path.join(__dirname, '../templates/stepfile.hbs'), true);
+        await this._createTemplate(path.join(__dirname, '../templates/stepfile.hbs'));
+
+        await this._start(true);
+        this._watchFiles(true);
     }
 
     /**
@@ -55,15 +57,17 @@ export default class Gherkinizer {
         if (this.VERBOSE) {
             log('Creating spec files');
         }
-        await this._start(path.join(__dirname, '../templates/specfile.hbs'));
+        await this._createTemplate(path.join(__dirname, '../templates/specfile.hbs'));
+
+        await this._start();
+        this._watchFiles(false);
     }
 
-    private async _start(templateFilePath: string, steps: boolean = false) {
+    private async _start(steps: boolean = false) {
         try {
-            await this._createTemplate(templateFilePath);
             const stepFileBuffer = await this._readStepFiles();
-
             // create steps in vm context
+            StepsSandbox.reset();
             vm.runInNewContext(stepFileBuffer.toString(), StepsSandbox);
 
             const filePaths = await this._readGlob(this.GLOB_PATH);
@@ -74,16 +78,23 @@ export default class Gherkinizer {
                 }
                 await this._outputFile(filePath, steps);
             });
-
-            if (this.WATCH_MODE) {
-                this._watcher = new Watcher([this.GLOB_PATH]);
-                this._watcher.on('change', (filePath) => this._outputFile(filePath, steps));
-                this._watcher.on('add', (filePath) => this._outputFile(filePath, steps));
-                log('Gherkinizer is now watching files');
-            }
         } catch (exception) {
             console.error(exception);
             process.exit(1);
+        }
+    }
+
+    private _watchFiles(steps: boolean = false) {
+        if (this.WATCH_MODE) {
+            const featureWatcher = new Watcher([this.GLOB_PATH]);
+            featureWatcher.on('change', (filePath) => this._outputFile(filePath, steps));
+            featureWatcher.on('add', (filePath) => this._outputFile(filePath, steps));
+
+            const stepWatcher = new Watcher([this.STEPS]);
+            stepWatcher.on('change', (filePath) => this._start(steps));
+            stepWatcher.on('add', (filePath) => this._start(steps));
+
+            log(`Gherkinizer is now watching ${steps ? 'reusable scenario' : 'feature' } files`);
         }
     }
 
@@ -160,7 +171,9 @@ export default class Gherkinizer {
      * @param pickles Pickled Gherkin Document
      * @param stepFile If true, template model will match a step file
      */
-    private _createTemplateFile(feature: string, filename: string, pickles: Pickle[], stepFile: boolean = false): string {
+    private _createTemplateFile(feature: string,
+                                filename: string, pickles: Pickle[],
+                                stepFile: boolean = false): string {
         const templateModel: TemplateModel = {
             /**
              * At this point we know that doc.feature is defined because we check with 
@@ -254,6 +267,9 @@ export default class Gherkinizer {
      */
     private _writeFile(fileName: string, templateOutput: string): Promise<void> {
         fileName = fileName.replace(/\s/g, '_');
+        if (!this.STEPS) {
+            fileName = fileName + '.spec';
+        }
         return fs.outputFile(fileName + '.js', templateOutput);
     }
 }

@@ -40,3 +40,6 @@ Scenario: I expect device count to be '$1'
 
 Scenario: I click on the clear query button
     Given I click on '.query-button-base.clear-button'
+
+Scenario: I do something else again
+    Given I do this thing
