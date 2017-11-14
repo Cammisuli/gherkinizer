@@ -91,8 +91,14 @@ export default class Gherkinizer {
             featureWatcher.on('add', (filePath) => this._outputFile(filePath, steps));
 
             const stepWatcher = new Watcher([this.STEPS]);
-            stepWatcher.on('change', (filePath) => this._start(steps));
-            stepWatcher.on('add', (filePath) => this._start(steps));
+            stepWatcher.on('change', (filePath) => {
+                log('Step file changed. Clearing cache');
+                this._start(steps);
+            });
+            stepWatcher.on('add', (filePath) => {
+                log('Step file added. Clearing cache');
+                this._start(steps);
+            });
 
             log(`Gherkinizer is now watching ${steps ? 'reusable scenario' : 'feature' } files`);
         }
