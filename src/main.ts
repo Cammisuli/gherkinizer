@@ -114,7 +114,11 @@ export default class Gherkinizer {
         if (!util.isNullOrUndefined(doc.feature)) {
             const filename = path.parse(filePath).name;
             const file = this._createTemplateFile(doc.feature.name, filename, pickles, steps);
-            await this._writeFile(path.join(this.PATH_OUT_DIR, filename), file);
+            let fileOutput = path.join(this.PATH_OUT_DIR, filename);
+            if (!steps) {
+                fileOutput = fileOutput + '.spec';
+            }
+            await this._writeFile(fileOutput, file);
         }
     }
 
@@ -273,9 +277,6 @@ export default class Gherkinizer {
      */
     private _writeFile(fileName: string, templateOutput: string): Promise<void> {
         fileName = fileName.replace(/\s/g, '_');
-        if (!this.STEPS) {
-            fileName = fileName + '.spec';
-        }
         return fs.outputFile(fileName + '.js', templateOutput);
     }
 }
