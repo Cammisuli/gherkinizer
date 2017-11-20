@@ -28,8 +28,8 @@ export default class Gherkinizer {
      * @param templateFilePath Path to the template file used to create spec files
      */
     createSpecs(): Promise<void>;
-    private _start(steps?);
-    private _watchFiles(steps?);
+    private _start(steps, reWatchSteps?);
+    private _watchFiles(steps);
     /**
      * Creates and outputs either spec or step files
      * @param filePath Filepath of the featureFile

@@ -19,6 +19,7 @@ Scenario: A search that returns no results
     And I start the search
     And I wait for all api responses
     Then I expect device count to be '(0 / 0)'
+    But I do something funky
   
 Scenario: Clear the previous search
     Given I click on the clear query button

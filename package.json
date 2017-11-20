@@ -16,6 +16,7 @@
     "@types/glob": "^5.0.33",
     "@types/handlebars": "^4.0.36",
     "@types/js-beautify": "0.0.31",
+    "@types/lodash": "^4.14.85",
     "@types/mustache": "^0.8.30",
     "@types/node": "^8.0.46",
     "@types/yargs": "^8.0.2",
@@ -29,6 +30,7 @@
     "glob": "^7.1.2",
     "handlebars": "^4.0.11",
     "js-beautify": "^1.7.4",
+    "lodash": "^4.17.4",
     "mustache": "^2.3.0",
     "yargs": "^10.0.3"
   }

@@ -45,7 +45,6 @@ export default class Gherkinizer {
         await this._createTemplate(path.join(__dirname, '../templates/stepfile.hbs'));
 
         await this._start(true);
-        this._watchFiles(true);
     }
 
     /**
@@ -59,11 +58,10 @@ export default class Gherkinizer {
         }
         await this._createTemplate(path.join(__dirname, '../templates/specfile.hbs'));
 
-        await this._start();
-        this._watchFiles(false);
+        await this._start(false);
     }
 
-    private async _start(steps: boolean = false) {
+    private async _start(steps: boolean, reWatchSteps: boolean = false) {
         try {
             const stepFileBuffer = await this._readStepFiles();
             // create steps in vm context
@@ -78,13 +76,16 @@ export default class Gherkinizer {
                 }
                 await this._outputFile(filePath, steps);
             });
+
+            this._watchFiles(steps);
+
         } catch (exception) {
             console.error(exception);
             process.exit(1);
         }
     }
 
-    private _watchFiles(steps: boolean = false) {
+    private _watchFiles(steps: boolean) {
         if (this.WATCH_MODE) {
             const featureWatcher = new Watcher([this.GLOB_PATH]);
             featureWatcher.on('change', (filePath) => this._outputFile(filePath, steps));
@@ -93,14 +94,18 @@ export default class Gherkinizer {
             const stepWatcher = new Watcher([this.STEPS]);
             stepWatcher.on('change', (filePath) => {
                 log('Step file changed. Clearing cache');
+                featureWatcher.close();
+                stepWatcher.close();
                 this._start(steps);
             });
             stepWatcher.on('add', (filePath) => {
                 log('Step file added. Clearing cache');
+                featureWatcher.close();
+                stepWatcher.close();
                 this._start(steps);
             });
 
-            log(`Gherkinizer is now watching ${steps ? 'reusable scenario' : 'feature' } files`);
+            log(`Gherkinizer is now watching ${steps ? 'reusable scenario' : 'feature'} files`);
         }
     }
 
