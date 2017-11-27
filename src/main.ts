@@ -68,7 +68,7 @@ export default class Gherkinizer {
             StepsSandbox.reset();
             vm.runInNewContext(stepFileBuffer.toString(), StepsSandbox);
 
-            const filePaths = await this._readGlob(this.GLOB_PATH);
+            const filePaths = await this._readGlob(this.GLOB_PATH + '/**/*.feature');
 
             filePaths.forEach(async (filePath) => {
                 if (this.VERBOSE) {
@@ -87,7 +87,7 @@ export default class Gherkinizer {
 
     private _watchFiles(steps: boolean) {
         if (this.WATCH_MODE) {
-            const featureWatcher = new Watcher([this.GLOB_PATH]);
+            const featureWatcher = new Watcher([this.GLOB_PATH + '/**/*.feature']);
             featureWatcher.on('change', (filePath) => this._outputFile(filePath, steps));
             featureWatcher.on('add', (filePath) => this._outputFile(filePath, steps));
 
@@ -117,7 +117,8 @@ export default class Gherkinizer {
     private async _outputFile(filePath: string, steps: boolean) {
         const { doc, pickles } = await this._parseFeatureFiles(filePath);
         if (!util.isNullOrUndefined(doc.feature)) {
-            const filename = path.parse(filePath).name;
+            const relativeFolder = this._generateRelativeFileFolder(filePath, this.GLOB_PATH);
+            const filename = relativeFolder + path.parse(filePath).name;
             const file = this._createTemplateFile(doc.feature.name, filename, pickles, steps);
             let fileOutput = path.join(this.PATH_OUT_DIR, filename);
             if (!steps) {
@@ -283,5 +284,11 @@ export default class Gherkinizer {
     private _writeFile(fileName: string, templateOutput: string): Promise<void> {
         fileName = fileName.replace(/\s/g, '_');
         return fs.outputFile(fileName + '.js', templateOutput);
+    }
+
+    private _generateRelativeFileFolder(filePath: string, basePath: string) {
+        const relPath = path.relative(basePath, filePath);
+        const relFolder = path.parse(relPath).dir;
+        return relFolder.length === 0 ? '' : relFolder.replace(/\\/g, '/') + '/';
     }
 }
