@@ -78,4 +78,5 @@ export default class Gherkinizer {
      * @param templateOutput parsed template string
      */
     private _writeFile(fileName, templateOutput);
+    private _generateRelativeFileFolder(filePath, basePath);
 }
