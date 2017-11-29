@@ -48,6 +48,10 @@ export default class StepsSandbox {
         STEP_MAP.get('Step')!.push({regex, func: func.toString()});
     }
 
+    public static defineStepWithFuncString(regex: RegExp, funcString: string) {
+        STEP_MAP.get('Step')!.push({regex, func: funcString});
+    }
+
     public static reset() {
         STEP_MAP = new Map<StepKeyword, StepDefinition[]>([
             ['Given', []],

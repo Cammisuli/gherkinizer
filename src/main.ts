@@ -202,18 +202,29 @@ export default class Gherkinizer {
 
         const createName = (name: string) => {
             if (stepFile) {
-                return name.replace(/\$\d+/g, '(.+)');
+                return name.replace(/\$\d+/g, '([^\']+)'); // prevent long matching
             }
             return name;
         };
 
         templateModel.scenarios = pickles.reduce<ScenarioModel[]>((model, pickle) => {
+            const pickleName = createName(pickle.name);
+
+            const pickleSteps = pickle.steps.map((p) => ({
+                func: this._mapStepFunc(p),
+                text: `${p.type} ${p.text}`
+            }));
+
+            // add reusable scenario that we processed to the steps sandbox 
+            if (stepFile) {
+                const funcString: string = '() => {' + pickleSteps.reduce(
+                    (result, pickleStep) => result + pickleStep.func, '') + '}';
+                StepsSandbox.defineStepWithFuncString(new RegExp(pickleName), funcString);
+            }
+
             const scenarioModel: ScenarioModel = {
-                name: createName(pickle.name),
-                steps: pickle.steps.map((p) => ({
-                    func: this._mapStepFunc(p),
-                    text: `${p.type} ${p.text}`
-                })),
+                name: pickleName,
+                steps: pickleSteps,
                 type: pickle.type
             };
             return [...model, scenarioModel];

@@ -14,5 +14,6 @@ export default class StepsSandbox {
     static And(regex: RegExp, func: Func): void;
     static But(regex: RegExp, func: Func): void;
     static defineStep(regex: RegExp, func: Func): void;
+    static defineStepWithFuncString(regex: RegExp, funcString: string): void;
     static reset(): void;
 }
