@@ -1,42 +1,48 @@
 /**
- * THIS IS AN AUTO GENERATED FILE, PLEASE DO NOT EDIT
- */
+* THIS IS AN AUTO GENERATED FILE, PLEASE DO NOT EDIT
+*/
 
 const __feature = '{{{filename}}}';
 
 describe(`{{{feature}}}`, () => {
-    {{#each scenarios}}
+{{#each scenarios}}
     {{#is type "Background"}}
         beforeEach(`{{{name}}}`, () => {
-            {{#each steps}} 
-            {{#if func}}
-               /** {{{text}}} */ 
-               {{{func}}};
+        window.ngui.level(0);
+        {{#each steps}}
+            window.ngui.nextTopStepData(`{{{text}}}`, {{#if func}}true{{else}}false{{/if}});
 
+            {{#if func}}
+                /** {{{text}}} */
+                {{{func}}};
             {{else}}
+
                 /**
                 * Please create a step for '{{{text}}}'
                 */
             {{/if}}
-            {{/each}}
+        {{/each}}
         })
 
     {{/is}}
     {{#is type "Scenario"}}
         it(`{{{name}}}`, () => {
-            {{#each steps}}
-                {{#if func}}
-                    /** {{{text}}} */
-                    {{{func}}}
-                {{else}}
-                    
-                     /**
-                     * Please create a step for '{{{text}}}'
-                     */
-                {{/if}}
-            {{/each}}
+        window.ngui.level(0);
+        {{#each steps}}
+            window.ngui.nextTopStepData(`{{{text}}}`, {{#if func}}true{{else}}false{{/if}});
+
+            {{#if func}}
+                /** {{{text}}} */
+                {{{func}}}
+            {{else}}
+
+                /**
+                * Please create a step for '{{{text}}}'
+                */
+            {{/if}}
+        {{/each}}
         });
 
     {{/is}}
-    {{/each}}
+{{/each}}
 });

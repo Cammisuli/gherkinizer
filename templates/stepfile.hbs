@@ -1,17 +1,25 @@
 /**
- * THIS IS AN AUTO GENERATED FILE, PLEASE DO NOT EDIT
- */
+* THIS IS AN AUTO GENERATED FILE, PLEASE DO NOT EDIT
+*/
 {{#each scenarios}}
-defineStep(/^{{{name}}}$/, () => {
-    {{#each steps}} 
-    {{#if func}}
-        {{{func}}}
+    defineStep(/^{{{name}}}$/, () => {
+    {{#each steps}}
 
-    {{else}}
-        /**
-        * Please create a step for '{{{text}}}'
-        */
-    {{/if}}
+        {
+        window.ngui.level(+1);
+        window.ngui.nextReusableStepData(`{{{text}}}`, {{#if func}}true{{else}}false{{/if}});
+
+        {{#if func}}
+            {{{func}}}
+        {{else}}
+            /**
+            * Please create a step for '{{{text}}}'
+            */
+        {{/if}}
+
+        window.ngui.level(-1);
+        }
+
     {{/each}}
-})
+    })
 {{/each}}
