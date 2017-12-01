@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as util from 'util';
 import * as vm from 'vm';
 
+import { Md5 } from 'ts-md5/dist/md5';
 import { log } from './helpers';
 import CucumberParser from './parser';
 import StepsSandbox from './sandbox';
@@ -13,6 +14,7 @@ import Watcher from './watcher';
 export default class Gherkinizer {
     private _template: Template;
     private _cucumber: CucumberParser;
+    private _stepFileContentHashes: Map<string, string> = new Map<string, string>();
 
     /**
      * Takes feature files, matches steps to a step definition file and outputs parsed templates
@@ -63,21 +65,27 @@ export default class Gherkinizer {
 
     private async _start(steps: boolean, reWatchSteps: boolean = false) {
         try {
-            const stepFileBuffer = await this._readStepFiles();
-            // create steps in vm context
-            StepsSandbox.reset();
-            vm.runInNewContext(stepFileBuffer.toString(), StepsSandbox);
+            // keep rebuilding until no step files change -- this is a brute force
+            // approach to satisfying a dependency tree
+            while (this._checkForStepFileChanges()) {
+                
+                // load step files into sandbox
+                const stepFileBuffer = await this._readStepFiles();
+                StepsSandbox.reset();
+                vm.runInNewContext(stepFileBuffer.toString(), StepsSandbox);
 
-            const filePaths = await this._readGlob(this.GLOB_PATH + '/**/*.feature');
-
-            filePaths.forEach(async (filePath) => {
-                if (this.VERBOSE) {
-                    log('Reading feature file: ' + filePath);
+                const filePaths = await this._readGlob(this.GLOB_PATH + '/**/*.feature');
+                for (const filePath of filePaths) {
+                    if (this.VERBOSE) {
+                        log('Reading feature file: ' + filePath);
+                    }
+                    await this._outputFile(filePath, steps);
                 }
-                await this._outputFile(filePath, steps);
-            });
+            }
 
-            this._watchFiles(steps);
+            if (this.WATCH_MODE) {
+                this._watchFiles(steps);
+            }
 
         } catch (exception) {
             console.error(exception);
@@ -86,27 +94,52 @@ export default class Gherkinizer {
     }
 
     private _watchFiles(steps: boolean) {
-        if (this.WATCH_MODE) {
-            const featureWatcher = new Watcher([this.GLOB_PATH + '/**/*.feature']);
-            featureWatcher.on('change', (filePath) => this._outputFile(filePath, steps));
-            featureWatcher.on('add', (filePath) => this._outputFile(filePath, steps));
+        const featureWatcher = new Watcher([this.GLOB_PATH + '/**/*.feature']);
+        featureWatcher.on('change', (filePath) => {
+            log('feature file changed: ' + filePath);
+            this._outputFile(filePath, steps);
+        });
+        featureWatcher.on('add', (filePath) => {
+            log('feature file added: ' + filePath);
+            this._outputFile(filePath, steps);
+        });
 
-            const stepWatcher = new Watcher([this.STEPS]);
-            stepWatcher.on('change', (filePath) => {
-                log('Step file changed. Clearing cache');
-                featureWatcher.close();
-                stepWatcher.close();
-                this._start(steps);
-            });
-            stepWatcher.on('add', (filePath) => {
-                log('Step file added. Clearing cache');
-                featureWatcher.close();
-                stepWatcher.close();
-                this._start(steps);
-            });
+        const stepWatcher = new Watcher([this.STEPS]);
+        stepWatcher.on('change', (filePath) => {
+            log('Step file changed: ' + filePath);
+            featureWatcher.close();
+            stepWatcher.close();
+            this._start(steps);
+        });
+        stepWatcher.on('add', (filePath) => {
+            log('Step file added: ' + filePath);
+            featureWatcher.close();
+            stepWatcher.close();
+            this._start(steps);
+        });
 
-            log(`Gherkinizer is now watching ${steps ? 'reusable scenario' : 'feature'} files`);
-        }
+        log(`Gherkinizer is now watching ${steps ? 'reusable scenario' : 'feature'} files`);
+    }
+
+    private _checkForStepFileChanges(): boolean {
+        let changed: boolean = false;
+
+        glob.sync(this.STEPS).forEach((filePath: string) => {
+            const fileContents: string = fs.readFileSync(filePath).toString();
+            const hash: string = Md5.hashAsciiStr(fileContents).toString();
+
+            if (!this._stepFileContentHashes.has(filePath)) {
+                log('Contents hash added for: ' + filePath);
+                changed = true;
+            } else if (this._stepFileContentHashes.get(filePath) !== hash) {
+                log('Contents hash changed for: ' + filePath);
+                changed = true;
+            }
+
+            this._stepFileContentHashes.set(filePath, hash);
+        });
+
+        return changed;
     }
 
     /**
@@ -298,8 +331,8 @@ export default class Gherkinizer {
      * @param templateOutput parsed template string
      */
     private _writeFile(fileName: string, templateOutput: string): Promise<void> {
-        fileName = fileName.replace(/\s/g, '_');
-        return fs.outputFile(fileName + '.js', templateOutput);
+        fileName = fileName.replace(/\s/g, '_') + '.js';
+        return fs.outputFile(fileName, templateOutput);
     }
 
     private _generateRelativeFileFolder(filePath: string, basePath: string) {
