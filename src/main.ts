@@ -80,7 +80,6 @@ export default class Gherkinizer {
                     if (this.VERBOSE) {
                         log('Reading feature file: ' + filePath);
                     }
-
                     const fileChanged: boolean = await this._outputFile(filePath, steps);
                     repeat = repeat || fileChanged;
                 }
@@ -133,26 +132,23 @@ export default class Gherkinizer {
     }
 
     private async _updateFileHash(filePath: string, content: string = ''): Promise<boolean> {
-        return new Promise<boolean>((resolve) => {
-            if (content.length === 0) {
-                content = fs.readFileSync(filePath).toString();
-            }
+        if (content.length === 0) {
+            content = fs.readFileSync(filePath).toString();
+        }
 
-            const hash: string = Md5.hashAsciiStr(content).toString();
-            const key: string = this._hashKey(filePath);
-            const oldHash: string | undefined = this._fileHashes.get(key);
-            this._fileHashes.set(key, hash);
+        const hash: string = Md5.hashAsciiStr(content).toString();
+        const key: string = this._hashKey(filePath);
+        const oldHash: string | undefined = this._fileHashes.get(key);
+        this._fileHashes.set(key, hash);
 
-            if (oldHash === undefined) {
-                log('File hash added for: ' + filePath);
-                resolve(true);
-            } else if (oldHash !== hash) {
-                log('File hash changed for: ' + filePath);
-                resolve(true);
-            } else {
-                resolve(false);
-            }
-        });
+        if (oldHash === undefined) {
+            log('File hash added for: ' + filePath);
+            return true;
+        } else if (oldHash !== hash) {
+            log('File hash changed for: ' + filePath);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -188,35 +184,21 @@ export default class Gherkinizer {
     }
 
     private async _readStepFiles(): Promise<Buffer> {
-        return new Promise<Buffer>(async (res, rej) => {
-            let stepFileBuffer: Buffer = new Buffer('');
-
-            const newLine = new Buffer('\n');
-
-            const stepFilePaths = await this._readGlob(this.STEPS);
-            stepFilePaths.forEach(async (filePath, index, array) => {
-                if (this.VERBOSE) {
-                    log('Reading step file: ' + filePath);
-                }
-                const content = await fs.readFile(filePath);
-                stepFileBuffer = Buffer.concat([stepFileBuffer, newLine, content]);
-                if (index === array.length - 1) {
-                    res(stepFileBuffer);
-                }
-            });
-        });
+        let buffer: Buffer = new Buffer('');
+        const newLine = new Buffer('\n');
+        const filePaths = await this._readGlob(this.STEPS);
+        for (const filePath of filePaths) {
+            if (this.VERBOSE) {
+                log('Reading step file: ' + filePath);
+            }
+            const content = await fs.readFile(filePath);
+            buffer = Buffer.concat([buffer, newLine, content]);
+        }
+        return buffer;
     }
 
     private async _readGlob(fileGlob: string): Promise<string[]> {
-        return new Promise<string[]>((res, rej) => {
-            glob(fileGlob, { ignore: 'node_modules/**' }, (err, matches) => {
-                if (matches.length > 0) {
-                    res(matches);
-                } else {
-                    rej('No files found');
-                }
-            });
-        });
+        return glob.sync(fileGlob, { ignore: 'node_modules/**' });
     }
 
     /**
