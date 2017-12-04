@@ -4,10 +4,10 @@ export default class Gherkinizer {
     private PATH_OUT_DIR;
     private WATCH_MODE;
     private VERBOSE;
+    private static readonly _featureFilePat;
     private _template;
     private _cucumber;
-    private _stepFileHashes;
-    private _changedStepFiles;
+    private _fileHashes;
     /**
      * Takes feature files, matches steps to a step definition file and outputs parsed templates
      *
@@ -30,11 +30,10 @@ export default class Gherkinizer {
      * @param templateFilePath Path to the template file used to create spec files
      */
     createSpecs(): Promise<void>;
-    private _start(steps, reWatchSteps?);
+    private _outputAllFiles(steps, reWatchSteps?);
     private _watchFiles(steps);
     private _hashKey(filePath);
-    private _addNewStepFileHashes();
-    private _updateStepFileHash(filePath, content?);
+    private _updateFileHash(filePath, content?);
     /**
      * Creates and outputs either spec or step files
      * @param filePath Filepath of the featureFile
