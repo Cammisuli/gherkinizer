@@ -284,9 +284,7 @@ export default class Gherkinizer {
         const def = definitions.find((f) => f.regex.test(pickle.text));
 
         if (!def) {
-            // if (this.VERBOSE) {
-            //     log('No step found for ' + pickle.text);
-            // }
+            console.warn('No step found for: ' + pickle.text);
             return null;
         }
 
