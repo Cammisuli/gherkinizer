@@ -67,24 +67,22 @@ export default class Gherkinizer {
         try {
             // keep rebuilding until no step files change -- this is a brute force
             // approach to satisfying a dependency tree
-            let repeat: boolean;
-            do {
+            while (await this._stepFileChanged()) {
+                log('Building feature files...');
+
                 // load step files into sandbox
                 const stepFileBuffer = await this._readStepFiles();
                 StepsSandbox.reset();
                 vm.runInNewContext(stepFileBuffer.toString(), StepsSandbox);
              
-                repeat = false;
                 const filePaths = await this._readGlob(this.GLOB_PATH + Gherkinizer._featureFilePat);
                 for (const filePath of filePaths) {
                     if (this.VERBOSE) {
                         log('Reading feature file: ' + filePath);
                     }
-                    const fileChanged: boolean = await this._outputFile(filePath, steps);
-                    repeat = repeat || fileChanged;
+                    await this._outputFile(filePath, steps);
                 }
-                log('Finished generating files, another pass required: ' + repeat);
-            } while (repeat);
+            }
 
             if (this.WATCH_MODE) {
                 this._watchFiles(steps);
@@ -99,36 +97,25 @@ export default class Gherkinizer {
     private _watchFiles(steps: boolean): void {
         const featureWatcher = new Watcher([this.GLOB_PATH + Gherkinizer._featureFilePat]);
         featureWatcher.on('change', async (filePath) => {
-            log('feature file changed: ' + filePath);
             await this._outputFile(filePath, steps);
         });
         featureWatcher.on('add', async (filePath) => {
-            log('feature file added: ' + filePath);
             await this._outputFile(filePath, steps);
         });
+        log('Watching files: ' + this.GLOB_PATH + Gherkinizer._featureFilePat);
 
         const stepWatcher = new Watcher([this.STEPS]);
         stepWatcher.on('change', async (filePath) => {
-            log('Step file changed: ' + filePath);
             featureWatcher.close();
             stepWatcher.close();
             await this._outputAllFiles(steps);
         });
         stepWatcher.on('add', async (filePath) => {
-            log('Step file added: ' + filePath);
             featureWatcher.close();
             stepWatcher.close();
             await this._outputAllFiles(steps);
         });
-
-        log(`Gherkinizer is now watching ${steps ? 'reusable scenario' : 'feature'} files`);
-    }
-
-    private _hashKey(filePath: string): string {
-        const p: path.ParsedPath = path.parse(filePath);
-        let result = p.dir + '\\' + p.base;
-        result = result.replace(/\//g, '\\').replace(/^[^\\]+/, '');
-        return result;
+        log('Watching files: ' + this.STEPS);
     }
 
     private async _updateFileHash(filePath: string, content: string = ''): Promise<boolean> {
@@ -137,9 +124,8 @@ export default class Gherkinizer {
         }
 
         const hash: string = Md5.hashAsciiStr(content).toString();
-        const key: string = this._hashKey(filePath);
-        const oldHash: string | undefined = this._fileHashes.get(key);
-        this._fileHashes.set(key, hash);
+        const oldHash: string | undefined = this._fileHashes.get(filePath);
+        this._fileHashes.set(filePath, hash);
 
         if (oldHash === undefined) {
             log('File hash added for: ' + filePath);
@@ -151,12 +137,22 @@ export default class Gherkinizer {
         return false;
     }
 
+    private async _stepFileChanged(): Promise<boolean> {
+        let result: boolean = false;
+        const filePaths = await this._readGlob(this.STEPS);
+        for (const filePath of filePaths) {
+            const fileChanged: boolean = await this._updateFileHash(filePath);
+            result = result || fileChanged;
+        }
+        return result;
+    }
+
     /**
      * Creates and outputs either spec or step files
      * @param filePath Filepath of the featureFile
      * @param steps Boolean to parse steps
      */
-    private async _outputFile(filePath: string, steps: boolean): Promise<boolean> {
+    private async _outputFile(filePath: string, steps: boolean): Promise<void> {
         const { doc, pickles } = await this._parseFeatureFiles(filePath);
         if (!util.isNullOrUndefined(doc.feature)) {
             const relativeFolder = this._generateRelativeFileFolder(filePath, this.GLOB_PATH);
@@ -167,9 +163,7 @@ export default class Gherkinizer {
                 .replace(/\s/g, '_');
 
             fs.outputFile(outputPath, content);
-            return await this._updateFileHash(outputPath, content);
         }
-        return false;
     }
 
     /**

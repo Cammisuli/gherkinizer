@@ -32,8 +32,8 @@ export default class Gherkinizer {
     createSpecs(): Promise<void>;
     private _outputAllFiles(steps, reWatchSteps?);
     private _watchFiles(steps);
-    private _hashKey(filePath);
     private _updateFileHash(filePath, content?);
+    private _stepFileChanged();
     /**
      * Creates and outputs either spec or step files
      * @param filePath Filepath of the featureFile
